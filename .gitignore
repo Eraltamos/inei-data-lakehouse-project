@@ -214,3 +214,7 @@ data/*
 
 # EXCEPTO el archivo README que explica qué va ahí
 !data/README.md
+
+# Infraestructura interna de Dagster
+.dagster/
+.temp_dagster_home_*/
