@@ -1,0 +1,3687 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: health_edu
+  silver_name: enaho_health_edu_pers_education
+  grain: pers
+  description: Nivel educativo y asistencia escolar.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01a_300_raw
+  raw_file_name: Enaho01A-2023-300.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de Expansión anual de Población Proyecciones CPV-2007
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la persona
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de informante del Capítulo 300
+  - name: P300N
+    type: INTEGER
+    description: Número de la persona
+  - name: P300I
+    type: INTEGER
+    description: Código de informante
+  - name: P300A
+    type: INTEGER
+    description: ¿Cuál es el Idioma o lengua materna que aprendió en su niñez?
+    semantic_dictionary:
+      '1': Quechua
+      '2': Aimara
+      '3': Otra lengua nativa
+      '4': Castellano
+      '6': Portugués
+      '7': Otra lengua extranjera
+      '8': No escucha/no habla
+      '9': Lengua de señas peruanas
+      '10': Ashaninka
+      '11': Awajún/Aguarun
+      '12': Shipibo – Konibo
+      '13': Shawi / Chayahuita
+      '14': Matsigenka / Machiguenga
+      '15': Achuar    , 6-15
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+  - name: P301A
+    type: INTEGER
+    description: ¿Cuál es el último año o grado de estudios y nivel que aprobó? -
+      Nivel
+    semantic_dictionary:
+      '1': Sin nivel
+      '2': Educación inicial
+      '4': Primaria completa
+      '5': Secundaria incompleta
+      '6': Secundaria completa
+      '7': Superior no universitaria Incompleta
+      '8': Superior no universitaria completa
+      '9': Superior universitaria incompleta
+      '10': Superior universitaria completa
+      '11': Maestria/Doctorado
+      '12': Básica especial
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+  - name: P301B
+    type: INTEGER
+    description: ¿Cuál es el último año o grado de estudios y nivel que aprobó? -
+      Año
+    sentinel_nulls:
+    - 99
+  - name: P301C
+    type: INTEGER
+    description: ¿Cuál es el último año o grado de estudios y nivel que aprobó? -
+      Grado
+    sentinel_nulls:
+    - 9
+  - name: P301D
+    type: INTEGER
+    description: ¿Cuál es el último año o grado de estudios y nivel que aprobó? -
+      Centro de Estudios
+    semantic_dictionary:
+      '1': Estatal
+      '2': No estatal
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P301A0
+    type: INTEGER
+    description: ¿Cuál es la carrera superior universitaria o no universitaria que
+      ud. estudia o ha estudiado?
+    semantic_dictionary:
+      '0': Respondió
+      '1': Ninguna
+    sentinel_nulls:
+    - 2
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P301A1
+    type: INTEGER
+    description: Código de la carrera superior universitaria o no universitaria que
+      ud. estudia o ha estudiado
+    sentinel_nulls:
+    - 999999
+  - name: P301B0
+    type: INTEGER
+    description: ¿Cuál es el nombre del centro de estudios donde estudia o ha estudiado
+      la carrera superior universitaria o no universitaria?
+    sentinel_nulls:
+    - 0
+  - name: P301B1
+    type: INTEGER
+    description: Código del centro de estudios donde estudia o ha estudiado la carrera
+      superior universitaria o no universitaria
+    sentinel_nulls:
+    - 999999999
+  - name: P301B3
+    type: INTEGER
+    description: Código del departamento donde estudia o ha estudiado la carrera superior
+      universitaria o no universitaria
+    sentinel_nulls:
+    - 99
+  - name: P302
+    type: INTEGER
+    description: ¿Sabe leer y escribir? - Respuesta espontánea
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P302X
+    type: INTEGER
+    description: ¿Sabe leer y escribir? - Aplicó cartilla
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+      '3': No se aplicó cartilla
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P302A
+    type: INTEGER
+    description: En los últimos 12 meses, ¿Recibió programa de alfabetización ?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P302B
+    type: INTEGER
+    description: ¿Quién le dio?
+    semantic_dictionary:
+      '1': PRONAMA/DIALFA
+      '2': Iglesia
+      '3': ONG
+      '4': Otro
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P303
+    type: INTEGER
+    description: El año pasado (...), ¿Estuvo matriculado en algún centro o programa
+      de educación básica o superior ?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P304A
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios al que asistió el año pasado
+      (...)? – Nivel
+    semantic_dictionary:
+      '1': Educación inicial
+      '2': Primaria
+      '3': Secundaria
+      '4': Superior no universitaria
+      '5': Superior universitaria
+      '6': Maestria/Doctorado
+      '7': Básica especial
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P304B
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios al que asistió el año pasado
+      (…)? – Año
+    sentinel_nulls:
+    - 9
+  - name: P304C
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios al que asistió el año pasado
+      (...)? – Grado
+    sentinel_nulls:
+    - 9
+  - name: P304D
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios al que asistió el año pasado
+      (…)? – Centro de Estudios
+    semantic_dictionary:
+      '1': Estatal
+      '2': No Estatal
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P305
+    type: INTEGER
+    description: 'El resultado que obtuvo el año pasado (...) fue :'
+    semantic_dictionary:
+      '1': Aprobado
+      '2': Desaprobado
+      '3': Retirado
+      '4': Otro
+      '5': No aprueba, ni desaprueba (inicial)
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: P306
+    type: INTEGER
+    description: Este año, ¿Está matriculado en algún centro o programa de educación
+      básica o superior ?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P307
+    type: INTEGER
+    description: Actualmente, ¿Asiste a algún centro o programa de educación básica
+      o superior ?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P307C
+    type: INTEGER
+    description: Modalidad
+    semantic_dictionary:
+      '1': Presencial
+      '2': Semipresencial
+      '3': A distancia
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P307A1
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      ¿Televisión?'
+    sentinel_nulls:
+    - 0
+  - name: P307A2
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      ¿Radio/equipo de sonido?'
+    sentinel_nulls:
+    - 0
+  - name: P307A3
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      ¿Plataforma virtual/página web?'
+    sentinel_nulls:
+    - 0
+  - name: P307A4
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      ¿Otro?'
+    sentinel_nulls:
+    - 0
+  - name: P307A4_5
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      WhatsApp'
+    semantic_dictionary:
+      '5': WhatsApp
+    sentinel_nulls:
+    - 0
+    constraints:
+    - allowed_values:
+      - 5
+  - name: P307A4_6
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      Correo electrónico'
+    semantic_dictionary:
+      '6': Correo electrónico
+    sentinel_nulls:
+    - 0
+    constraints:
+    - allowed_values:
+      - 6
+  - name: P307A4_7
+    type: INTEGER
+    description: 'A través de que medios accede al contenido de las clases a distancia:
+      Llamada telefónica'
+    semantic_dictionary:
+      '7': Llamada telefónica
+    sentinel_nulls:
+    - 0
+    constraints:
+    - allowed_values:
+      - 7
+  - name: P307B1
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: ¿Interacción
+      con el profesor?'
+    sentinel_nulls:
+    - 0
+  - name: P307B2
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: ¿Videos?'
+    sentinel_nulls:
+    - 0
+  - name: P307B3
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: ¿Documentos
+      (textos, cuadros, etc.)?'
+    sentinel_nulls:
+    - 0
+  - name: P307B4
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: ¿Otro?'
+    sentinel_nulls:
+    - 0
+  - name: P307B4_5
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: Mensajes
+      de audio'
+    semantic_dictionary:
+      '5': Mensajes de audio
+    sentinel_nulls:
+    - 0
+    constraints:
+    - allowed_values:
+      - 5
+  - name: P307B4_6
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: Mensajes
+      de texto'
+    semantic_dictionary:
+      '6': Mensajes de texto
+    sentinel_nulls:
+    - 0
+    constraints:
+    - allowed_values:
+      - 6
+  - name: P307B4_7
+    type: INTEGER
+    description: 'El desarrollo de las clases a distancia las recibe con: Sin acompañamiento
+      al estudiante'
+    semantic_dictionary:
+      '7': Sin acompañamiento al estudiante
+    sentinel_nulls:
+    - 0
+    constraints:
+    - allowed_values:
+      - 7
+  - name: P308A
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios en el que está matriculado? -
+      Nivel
+    semantic_dictionary:
+      '1': Educacion inicial
+      '2': Primaria
+      '3': Secundaria
+      '4': Superior no universitaria
+      '5': Superior universitaria
+      '6': Maestria/Doctorado
+      '7': Básica especial
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P308B
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios en el que está matriculado? -
+      Año
+    sentinel_nulls:
+    - 9
+  - name: P308C
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios en el que está matriculado? -
+      Grado
+    sentinel_nulls:
+    - 9
+  - name: P308D
+    type: INTEGER
+    description: ¿Cuál es el grado o año de estudios en el que está matriculado? -
+      Centro de Estudios
+    semantic_dictionary:
+      '1': Estatal
+      '2': No estatal    , 9
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P308B1
+    type: INTEGER
+    description: 'En su opinión, ¿El servicio educativo que brinda el centro de eseñanza
+      donde asiste actualmente en relación a: Infraestructura(paredes, techos, pisos)
+      es?'
+    semantic_dictionary:
+      '1': Muy malo
+      '2': Malo
+      '3': Bueno
+      '4': Muy bueno
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P308B2
+    type: INTEGER
+    description: 'En su opinión, ¿El servicio educativo que brinda el centro de eseñanza
+      donde asiste actualmente en relación a: Equipamiento (Carpetas, Laboratorios,
+      Computadoras, etc.) es?'
+    semantic_dictionary:
+      '1': Muy malo
+      '2': Malo
+      '3': Bueno
+      '4': Muy bueno
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P308B3
+    type: INTEGER
+    description: 'En su opinión, ¿El servicio educativo que brinda el centro de eseñanza
+      donde asiste actualmente en relación a: Enseñanza de los maestros es?'
+    semantic_dictionary:
+      '1': Muy malo
+      '2': Malo
+      '3': Bueno
+      '4': Muy bueno
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P308B4
+    type: INTEGER
+    description: 'En su opinión, ¿El servicio educativo que brinda el centro de eseñanza
+      donde asiste actualmente en relación a: Dotación de materiales educativos (Libros,
+      Láminas, maquetas, etc.) es?'
+    semantic_dictionary:
+      '1': Muy malo
+      '2': Malo
+      '3': Bueno
+      '4': Muy bueno
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P308B5
+    type: INTEGER
+    description: 'En su opinión, ¿El servicio educativo que brinda el centro de eseñanza
+      donde asiste actualmente en relación a: Apoyo a la participación de los padres
+      de familiar (Promueven participación de los padres de familia, escuela de padres)
+      es?'
+    semantic_dictionary:
+      '1': Muy malo
+      '2': Malo
+      '3': Bueno
+      '4': Muy bueno
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P308C1
+    type: INTEGER
+    description: 'La institución educativa o colegio, instituto superior o universidad
+      a la que asiste, ¿esta ubicada: Aqui en este distrito?'
+    semantic_dictionary:
+      '0': En otro distrito
+      '1': Aquí en este distrito
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P308C2
+    type: INTEGER
+    description: 'La institución educativa o colegio, instituto superior o universidad
+      a la que asiste, ¿esta ubicada: En otro distrito?'
+  - name: P310
+    type: INTEGER
+    description: En los últimos 12 meses, de ... a ... ¿Recibió enseñanza en algún
+      centro o programa de estudios cuya duración sea menor a 3 años (CETPRO, Academia
+      u otros) ?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P310B1
+    type: INTEGER
+    description: En el presente año o en años anteriores, ¿Recibió enseñanza del nivel
+      auxiliar técnico o técnico, en algún centro o programa de estudios cuya duración
+      sea menor a 3 años?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P310C0
+    type: INTEGER
+    description: No sabe-¿Cuál es el nombre de la última carrera de nivel auxiliar
+      técnico o técnico, que usted estudia o ha estudiado?
+    sentinel_nulls:
+    - 0
+  - name: P310C1
+    type: INTEGER
+    description: Código de la última carrera de nivel auxiliar técnico o técnico,
+      que usted estudia o ha estudiado
+  - name: P310D1
+    type: INTEGER
+    description: ¿Cuál es el tiempo de duración de la carrera de nivel auxiliar técnico
+      o técnico, que usted estudia o ha estudiado? - Años
+  - name: P310D2
+    type: INTEGER
+    description: ¿Cuál es el tiempo de duración de la carrera de nivel auxiliar técnico
+      o técnico, que usted estudia o ha estudiado? - Meses
+  - name: P310E0
+    type: INTEGER
+    description: ¿Cuál es el nombre del centro de estudios donde estudia o ha estudiado
+      la carrera de nivel auxiliar técnico o técnico?
+    sentinel_nulls:
+    - 0
+  - name: P310E1
+    type: INTEGER
+    description: Código del centro de estudios donde estudia o ha estudiado la carrera
+      de nivel auxiliar técnico o técnico?
+    sentinel_nulls:
+    - 9
+  - name: P310E3
+    type: INTEGER
+    description: Código del departamento del centro de estudios donde estudia o ha
+      estudiado la carrera de nivel auxiliar técnico o técnico?
+    semantic_dictionary:
+      '1': Amazonas
+      '2': Ancash
+      '3': Apurímac
+      '4': Arequipa
+      '5': Ayacucho
+      '6': Cajamarca
+      '7': Callao
+      '8': Cusco
+      '9': Huancavelica
+      '10': Huánuco
+      '11': Ica
+      '12': Junín
+      '13': La Libertad
+      '14': Lambayeque
+      '15': Lima
+      '16': Loreto
+      '17': Madre De Dios
+      '18': Moquegua
+      '19': Pasco
+      '20': Piura
+      '21': Puno
+      '22': San Martín
+      '23': Tacna
+      '24': Tumbes
+      '25': Ucayali
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+      - 23
+      - 24
+      - 25
+  - name: P311N$1
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Uniforme escolar?'
+    semantic_dictionary:
+      '1': Uniforme,calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila,
+        etc.
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311N$2
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Calzado escolar ?'
+    semantic_dictionary:
+      '2': Calzado Escolar
+    constraints:
+    - allowed_values:
+      - 2
+  - name: P311N$3
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Libros y textos ?'
+    semantic_dictionary:
+      '3': Libros y textos
+    constraints:
+    - allowed_values:
+      - 3
+  - name: P311N$4
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Útiles escolares ?'
+    semantic_dictionary:
+      '4': Útiles escolares
+    constraints:
+    - allowed_values:
+      - 4
+  - name: P311N$5
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Matrícula ?'
+    semantic_dictionary:
+      '5': Matricula
+    constraints:
+    - allowed_values:
+      - 5
+  - name: P311N$6
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: APAFA ?'
+    semantic_dictionary:
+      '6': APAFA
+    constraints:
+    - allowed_values:
+      - 6
+  - name: P311N$7
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Otros (Fotocopias, cuotas extraordinarias, etc) ?'
+    semantic_dictionary:
+      '7': Otros
+    constraints:
+    - allowed_values:
+      - 7
+  - name: P311N$8
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Laptop del Programa Una Laptop por niño'
+    semantic_dictionary:
+      '8': Laptop del Programa - Una laptop por niño 1 0 N En los últimos 12 meses
+        de ... a ...
+    constraints:
+    - allowed_values:
+      - 8
+  - name: P311N$9
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Tablet MINEDU'
+    semantic_dictionary:
+      '9': Tablet MINEDU
+    constraints:
+    - allowed_values:
+      - 9
+  - name: P311$1
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Uniforme escolar?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$2
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Calzado escolar ?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$3
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Libros y textos ?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$4
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Útiles escolares ?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$5
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Matrícula ?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$6
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: APAFA ?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$7
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Otros (Fotocopias, cuotas extraordinarias, etc.)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Comprado  Rango 1-2 ¿Cómo obtuvieron
+      el(la) - Uniforme, calzado escolar, útiles escolares, textos, matrícula, APAFA,
+      mochila, etc?: Comprado'
+  - name: P311$9
+    type: INTEGER
+    description: 'En los últimos 12 meses de ... a ... ,¿ Gastó, obtuvo, consiguió
+      o le regalaron: Tablet MINEDU'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P311A1$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A1$9
+    type: INTEGER
+    description: '¿Cómo obtuvieron - programa tablet MINEDU?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Programa Social?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A2$9
+    type: INTEGER
+    description: '¿Cómo obtuvieron - programa tablet MINEDU?: Autoconsumo'
+    semantic_dictionary:
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A3$9
+    type: INTEGER
+    description: '¿Cómo obtuvieron - programa tablet MINEDU?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A4$9
+    type: INTEGER
+    description: '¿Cómo obtuvieron - programa tablet MINEDU?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Programa Social?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A5$9
+    type: INTEGER
+    description: '¿Cómo obtuvieron - programa tablet MINEDU?: Pago en especie'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$7
+    type: INTEGER
+    description: ¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)? Programa Social
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Programa Social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A6$9
+    type: INTEGER
+    description: ¿Cómo obtuvieron - programa tablet MINEDU?:Pprograma social
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Calzado Escolar?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Libros y textos?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Útiles escolares?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Matrícula?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - APAFA?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Otros (Fotocopias, cuotas extraordinarias,
+      etc)?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) - Laptop del Programa Una Laptop por niño?:
+      Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311A7$9
+    type: INTEGER
+    description: '¿Cómo obtuvieron - programa tablet MINEDU?: Otro medio'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P311B$1
+    type: INTEGER
+    description: '¿Cuánto fue el monto de: Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Programa Social?'
+    sentinel_nulls:
+    - 999999
+  - name: P311B$2
+    type: INTEGER
+    description: ¿Cuánto fue el monto de:Calzado Escolar?
+    sentinel_nulls:
+    - 999999
+  - name: P311B$3
+    type: INTEGER
+    description: ¿Cuánto fue el monto de Libros y Textos?
+    sentinel_nulls:
+    - 999999
+  - name: P311B$4
+    type: INTEGER
+    description: '¿Cuánto fue el monto de: Útiles Escolares?'
+    sentinel_nulls:
+    - 999999
+  - name: P311B$5
+    type: INTEGER
+    description: ¿Cuánto fue el monto de:Matrícula?
+    sentinel_nulls:
+    - 999999
+  - name: P311B$6
+    type: INTEGER
+    description: ¿Cuánto fue el monto de:APAFA?
+    sentinel_nulls:
+    - 999999
+  - name: P311B$7
+    type: INTEGER
+    description: ¿Cuánto fue el monto de:Otros (Fotocopias, cuotas extraordinarias,
+      etc)?
+    sentinel_nulls:
+    - 999999
+  - name: P311B$8
+    type: INTEGER
+    description: '¿Cuánto fue el monto de: Laptop del Programa Una Laptop por niño?'
+  - name: P311B$9
+    type: INTEGER
+    description: '¿Cuánto fue el monto de: obtener programa tablet MINEDU?'
+  - name: P311C$1
+    type: INTEGER
+    description: '¿Dónde compró el(los): Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Programa Social?'
+    semantic_dictionary:
+      '1': Ambulante
+      '2': Librería
+      '3': Centro de estudios
+      '4': Feria
+      '5': Puesto de mercado
+      '6': Bazar
+      '7': Bodega, tienda, etc.
+      '8': Tienda especializada al por mayor
+      '9': Tienda especializada al por menor
+      '10': Otro
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+  - name: P311C$2
+    type: INTEGER
+    description: '¿Dónde compró el(los): Calzado Escolar?'
+    semantic_dictionary:
+      '1': Ambulante
+      '2': Librería
+      '3': Centro de estudios
+      '4': Feria
+      '5': Puesto de mercado
+      '6': Bazar
+      '7': Bodega, tienda, etc.
+      '8': Tienda especializada al por mayor
+      '9': Tienda especializada al por menor
+      '10': Otro
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+  - name: P311C$3
+    type: INTEGER
+    description: '¿Dónde compró el(los): Libros y Textos?'
+    semantic_dictionary:
+      '1': Ambulante
+      '2': Librería
+      '3': Centro de estudios
+      '4': Feria
+      '5': Puesto de mercado
+      '6': Bazar
+      '7': Bodega, tienda, etc.
+      '8': Tienda especializada al por mayor
+      '9': Tienda especializada al por menor
+      '10': Otro
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+  - name: P311C$4
+    type: INTEGER
+    description: '¿Dónde compró el(los): Útiles Escolares?'
+    semantic_dictionary:
+      '1': Ambulante
+      '2': Librería
+      '3': Centro de estudios
+      '4': Feria
+      '5': Puesto de mercado
+      '6': Bazar
+      '7': Bodega, tienda, etc.
+      '8': Tienda especializada al por mayor
+      '9': Tienda especializada al por menor
+      '10': Otro
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+  - name: P311C$5
+    type: INTEGER
+    description: '¿Dónde compró el(los): Matrícula?'
+  - name: P311C$6
+    type: INTEGER
+    description: '¿Dónde compró el(los): APAFA?'
+  - name: P311C$7
+    type: INTEGER
+    description: '¿Dónde compró el(los): Otros (Fotocopias, cuotas extraordinarias,
+      etc)'
+    semantic_dictionary:
+      '1': Ambulante
+      '2': Librería
+      '3': Centro de estudios
+      '4': Feria
+      '5': Puesto de mercado
+      '6': Bazar
+      '7': Bodega, tienda, etc.
+      '8': Tienda especializada al por mayor
+      '9': Tienda especializada al por menor
+      '10': Otro
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+  - name: P311C$8
+    type: INTEGER
+    description: '¿Dónde compró el(los): Laptop del Programa Una Laptop por niño?'
+  - name: P311C$9
+    type: INTEGER
+    description: '¿Dónde compró: Programa tablet MINEDU?'
+  - name: P311D$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)?'
+    sentinel_nulls:
+    - 999999
+  - name: P311D$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño?'
+  - name: P311D$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Programa
+      tablet MINEDU?'
+  - name: P311D2$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: P311D2$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?
+      - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: P311D2$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: P311D2$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?
+      - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: P311D2$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?
+      - Autoconsumo'
+  - name: P311D2$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA? -
+      Autoconsumo'
+  - name: P311D2$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)? - Autoconsumo'
+  - name: P311D2$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño? - Autoconsumo'
+  - name: P311D2$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Tablet MINEDU?
+      - Autoconsumo'
+  - name: P311D3$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social? - Autosuministro'
+  - name: P311D3$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?
+      - Autosuministro'
+  - name: P311D3$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos? - Autosuministro'
+  - name: P311D3$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?
+      - Autosuministro'
+  - name: P311D3$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?
+      - Autosuministro'
+  - name: P311D3$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA? -
+      Autosuministro'
+  - name: P311D3$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)? - Autosuministro'
+  - name: P311D3$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño? - Autosuministro'
+  - name: P311D3$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Tablet MINEDU?
+      - Autosuministro'
+  - name: P311D4$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social? - Pago en especie'
+  - name: P311D4$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?
+      - Pago en especie'
+  - name: P311D4$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos? - Pago en especie'
+  - name: P311D4$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?
+      - Pago en especie'
+  - name: P311D4$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?
+      - Pago en especie'
+  - name: P311D4$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA? -
+      Pago en especie'
+  - name: P311D4$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)? - Pago en especie'
+  - name: P311D4$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño? - Pago en especie'
+  - name: P311D4$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Tablet MINEDU?
+      - Pago en especie'
+  - name: P311D5$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles'
+  - name: P311D5$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?
+      - Otros hogares'
+  - name: P311D5$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos? - Otros hogares'
+  - name: P311D5$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?
+      - Otros hogares'
+  - name: P311D5$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?
+      - Otros hogares'
+  - name: P311D5$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA? -
+      Otros hogares'
+  - name: P311D5$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)? - Otros hogares'
+  - name: P311D5$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño? - Otros hogares'
+  - name: P311D5$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Tablet MINEDU?
+      - Otros hogares'
+  - name: P311D6$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social? - Programa social'
+  - name: P311D6$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?
+      - Programa social'
+  - name: P311D6$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos? - Programa social'
+  - name: P311D6$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?
+      - Programa social'
+  - name: P311D6$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?
+      - Programa social'
+  - name: P311D6$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA? -
+      Programa social'
+  - name: P311D6$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)? - Programa social'
+  - name: P311D6$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño? - Programa social'
+  - name: P311D6$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Tablet MINEDU?
+      - Programa social'
+  - name: P311D7$1
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social? - Otro'
+  - name: P311D7$2
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Calzado Escolar?
+      - Otro'
+  - name: P311D7$3
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Libros y
+      Textos? - Otro'
+  - name: P311D7$4
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Útiles Escolares?
+      - Otro'
+  - name: P311D7$5
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Matrícula?
+      - Otro'
+  - name: P311D7$6
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: APAFA? -
+      Otro'
+  - name: P311D7$7
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Otros (Fotocopias,
+      cuotas extraordinarias, etc)? - Otro'
+  - name: P311D7$8
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Laptop del
+      Programa Una Laptop por niño? - Otro'
+  - name: P311D7$9
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagar por: Tablet MINEDU?
+      - Otro'
+  - name: P311E$1
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Uniforme escolar'
+  - name: P311E$2
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Calzado escolar'
+  - name: P311E$3
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Libros y textos'
+  - name: P311E$4
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Útiles escolares'
+  - name: P311E$5
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Matrícula'
+  - name: P311E$6
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: APAFA'
+  - name: P311E$7
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Otros (Fotocopias, cuotas extraordinarias, etc),'
+  - name: P311E$8
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces: Laptop del Programa Una Laptop por niño'
+  - name: P311E$9
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto de : programa tablet MINEDU, durante
+      los últimos'
+  - name: P311T1
+    type: INTEGER
+    description: Total Gasto en los últimos 12 meses (S/.)
+  - name: P311T22
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? - Total Autoconsumo
+  - name: P311T23
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? - Total Autosuministro
+  - name: P311T24
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? - Total Pago en especie
+  - name: P311T25
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? - Total Otros hogares
+  - name: P311T26
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? - Total Programa Social
+  - name: P311T27
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? - Total Otro (especifique)
+  - name: P311T2
+    type: INTEGER
+    description: Total Estimado en los últimos 12 meses(S/.)
+  - name: P3121
+    type: INTEGER
+    description: 'En el mes anterior, gastó en : ¿Pensión anual de Enseñanza?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P3121A1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Pensión anual de Enseñanza?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3121A2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Pensión anual de Enseñanza?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3121A3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Pensión anual de Enseñanza?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3121A4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Pensión anual de Enseñanza?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros Hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3121A5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Pensión anual de Enseñanza?: Programa social'
+    semantic_dictionary:
+      '1': Programa Social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3121A6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Pensión anual de Enseñanza?: Otro'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3121B
+    type: INTEGER
+    description: '¿Cuánto fue el monto de: Pensión anual de Enseñanza?'
+  - name: P3121C
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagarlo?: Pensión anual
+      de Enseñanza?'
+  - name: P3121C2
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Pensión anual
+      de Enseñanza? – Autosuministro
+  - name: P3121C3
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Pensión anual
+      de Enseñanza? – Pago en especie
+  - name: P3121C4
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Pensión anual
+      de Enseñanza? – Otros hogares
+  - name: P3121C5
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Pensión anual
+      de Enseñanza? – Programa Social
+  - name: P3121C6
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Pensión anual
+      de Enseñanza? – Otro
+  - name: P3121D
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces : Pensión anual de Enseñanza'
+  - name: P3122
+    type: INTEGER
+    description: 'En el mes anterior, gastó en : ¿Movilidad Particular al centro de
+      enseñanza?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P3122A1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Movilidad Particular al centro de enseñanza
+      ?: Comprado'
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3122A2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Movilidad Particular al centro de enseñanza
+      ?: Autosuministro'
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3122A3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Movilidad Particular al centro de enseñanza
+      ?: Pago en especie'
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3122A4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Movilidad Particular al centro de enseñanza
+      ?: Otros hogares'
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3122A5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Movilidad Particular al centro de enseñanza
+      ?: Programa social'
+    semantic_dictionary:
+      '1': Programa social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3122A6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la): Movilidad Particular al centro de enseñanza
+      ?: Otro'
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3122B
+    type: INTEGER
+    description: '¿Cuánto fue el monto de: Movilidad Particular al centro de enseñanza
+      ?'
+    sentinel_nulls:
+    - 999999
+  - name: P3122C
+    type: INTEGER
+    description: '¿Cuánto cree que le costaría si tuviera que pagarlo?: Movilidad
+      Particular al centro de enseñanza'
+    sentinel_nulls:
+    - 999999
+  - name: P3122C2
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Movilidad Particular
+      al centro de enseñanza? – Autosuministro
+    sentinel_nulls:
+    - 999999
+  - name: P3122C3
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Movilidad Particular
+      al centro de enseñanza? – Pago en especie
+    sentinel_nulls:
+    - 999999
+  - name: P3122C4
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Movilidad Particular
+      al centro de enseñanza? – Otros hogares
+    sentinel_nulls:
+    - 999999
+  - name: P3122C5
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Movilidad Particular
+      al centro de enseñanza? – Programa Social
+    sentinel_nulls:
+    - 999999
+  - name: P3122C6
+    type: INTEGER
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por Movilidad Particular
+      al centro de enseñanza? – Otro
+    sentinel_nulls:
+    - 999999
+  - name: P3122D
+    type: INTEGER
+    description: '¿Cuántas veces realizó el gasto durante los últimos 12 meses? -
+      Número de veces : Movilidad Particular al centro de enseñanza'
+    sentinel_nulls:
+    - 999999
+  - name: P312T22
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagarlo? - Total Autosuministro
+    sentinel_nulls:
+    - 999999
+  - name: P312T23
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagarlo? - Total Pago
+      en especie
+    sentinel_nulls:
+    - 999999
+  - name: P312T24
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagarlo? - Total Otros
+      hogares
+    sentinel_nulls:
+    - 999999
+  - name: P312T25
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagarlo? - Total Programa
+      social
+    sentinel_nulls:
+    - 999999
+  - name: P312T26
+    type: INTEGER
+    description: ¿Cuánto cree que le costaría si tuviera que pagarlo? - Total Otro
+    sentinel_nulls:
+    - 999999
+  - name: P312T2
+    type: INTEGER
+    description: Total Estimado mes anterior (S/.)
+    sentinel_nulls:
+    - 999999
+  - name: P312T1
+    type: INTEGER
+    description: COLUMNA DERIVADA DE P312T2
+    sentinel_nulls:
+    - 999999
+    metadata_inferred: true
+  - name: P313
+    type: INTEGER
+    description: ¿Cuál es la principal razón por la que no está matriculado o no asiste
+      a algún centro o programa de educación básica o superior?
+    semantic_dictionary:
+      '1': Problemas económicos
+      '2': Estoy trabajando
+      '3': 'Terminó sus estudios: secundarios/ superiores /asiste a academia preuniversitaria'
+      '4': No tiene la edad suficiente (para el grupo 3-5 años)
+      '5': Problemas familiares
+      '6': De vacaciones
+      '7': No existe centro de educación básica o superior en el centro poblado
+      '8': Asiste a un centro de educación técnico productiva
+      '9': No me interesa/no me gusta el estudio
+      '10': Se dedica a los quehaceres del hogar
+      '11': Otra razón
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+  - name: P314A
+    type: INTEGER
+    description: En el mes anterior, ¿Ud. hizo uso del servicio de Internet?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P314B$1
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: El hogar?'
+    sentinel_nulls:
+    - 0
+  - name: P314B$2
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: El trabajo?'
+    sentinel_nulls:
+    - 0
+  - name: P314B$3
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: Un establecimiento
+      educativo'
+    sentinel_nulls:
+    - 0
+  - name: P314B$4
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: Una cabina
+      pública?'
+    sentinel_nulls:
+    - 0
+  - name: P314B$5
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: En casa
+      de otra persona'
+    sentinel_nulls:
+    - 0
+  - name: P314B$6
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: Otro?'
+    sentinel_nulls:
+    - 0
+  - name: P314B$7
+    type: INTEGER
+    description: 'En el mes anterior, ¿Uso ud., el servicio de internet en: Acceso
+      móvil a internet'
+    sentinel_nulls:
+    - 0
+  - name: P314B1_1
+    type: INTEGER
+    description: 'En el mes anterior, ¿El servicio de Internet lo usó a través de
+      una/un: Computadora'
+    sentinel_nulls:
+    - 0
+  - name: P314B1_2
+    type: INTEGER
+    description: 'En el mes anterior, ¿El servicio de Internet lo usó a través de
+      una/un: Laptop'
+    sentinel_nulls:
+    - 0
+  - name: P314B1_6
+    type: INTEGER
+    description: 'En el mes anterior, ¿El servicio de Internet lo usó a través de
+      una/un: Tablet'
+    sentinel_nulls:
+    - 0
+  - name: P314B1_7
+    type: INTEGER
+    description: 'En el mes anterior, ¿El servicio de Internet lo usó a través de
+      una/un: Otro'
+    sentinel_nulls:
+    - 0
+  - name: P314B1_8
+    type: INTEGER
+    description: 'En el mes anterior, ¿El servicio de Internet lo usó a través de
+      una/un: Celular sin plan de datos'
+    sentinel_nulls:
+    - 0
+  - name: P314B1_9
+    type: INTEGER
+    description: 'En el mes anterior, ¿El servicio de Internet lo usó a través de
+      una/un: Celular con plan de datos'
+    sentinel_nulls:
+    - 0
+  - name: P314D
+    type: INTEGER
+    description: ¿Ud. usa Internet al menos:?
+    semantic_dictionary:
+      '1': Una vez al dia
+      '2': Una vez a la semana
+      '3': Una vez al mes
+      '4': Cada 2 meses o más
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P3151
+    type: INTEGER
+    description: En el mes anterior ¿Obtuvo el servicio de Internet en cabina pública?
+      - Comprado
+    semantic_dictionary:
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3152
+    type: INTEGER
+    description: En el mes anterior ¿Obtuvo el servicio de Internet en cabina pública?
+      - Autosuministro
+    semantic_dictionary:
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3153
+    type: INTEGER
+    description: En el mes anterior ¿Obtuvo el servicio de Internet en cabina pública?
+      - Pago en
+    semantic_dictionary:
+      '1': Pago en especie
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3154
+    type: INTEGER
+    description: En el mes anterior ¿Obtuvo el servicio de Internet en cabina pública?
+      - Otros hogares
+    semantic_dictionary:
+      '1': Otros hogares
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3155
+    type: INTEGER
+    description: En el mes anterior ¿Obtuvo el servicio de Internet en cabina pública?
+      - Programa social
+    semantic_dictionary:
+      '1': Programa social
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P3156
+    type: INTEGER
+    description: En el mes anterior ¿Obtuvo el servicio de Internet en cabina pública?
+      - Otro
+    semantic_dictionary:
+      '1': Otro
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P315A
+    type: INTEGER
+    description: ¿Cuánto fue el monto del servicio en el mes anterior?    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P315B
+    type: INTEGER
+    description: ¿Cuánto cree que le constaría si tuviera que pagar por este servicio
+      que usó el mes anterior?    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P315B2
+    type: INTEGER
+    description: ¿Cuánto cree que le constaría si tuviera que pagar por este servicio
+      que usó el mes anterior? - Autosuministro    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P315B3
+    type: INTEGER
+    description: ¿Cuánto cree que le constaría si tuviera que pagar por este servicio
+      que usó el mes anterior? - Pago en especie    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P315B4
+    type: INTEGER
+    description: ¿Cuánto cree que le constaría si tuviera que pagar por este servicio
+      que usó el mes anterior? - Otros hogares    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P315B5
+    type: INTEGER
+    description: ¿Cuánto cree que le constaría si tuviera que pagar por este servicio
+      que usó el mes anterior? - Programa social    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P315B6
+    type: INTEGER
+    description: ¿Cuánto cree que le constaría si tuviera que pagar por este servicio
+      que usó el mes anterior? - Otro    – 999998
+    sentinel_nulls:
+    - 999999
+  - name: P316$1
+    type: INTEGER
+    description: '¿Usó el Internet para: Obtener información (sobre bienes y servicios,
+      salud, organizaciones gubernamentales)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$2
+    type: INTEGER
+    description: '¿Usó el Internet para: Comunicarse (e-mail, chat, llamadas por Skype,
+      WhatsApp, Facebook, Twitter, etc.)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$3
+    type: INTEGER
+    description: '¿Usó el Internet para: Comprar productos y/o servicios?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    metadata_inferred: true
+  - name: P316$4
+    type: INTEGER
+    description: '¿Usó el Internet para: Operaciones de banca electrónica y otros
+      servicios financieros?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    metadata_inferred: true
+  - name: P316$5
+    type: INTEGER
+    description: '¿Usó el Internet para: Educación formal y actividades de capacitación?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$6
+    type: INTEGER
+    description: '¿Usó el Internet para: Transacciones (interactuar) con organizaciones
+      estatales/autoridades públicas?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$7
+    type: INTEGER
+    description: '¿Usó el Internet para: Actividades de entretenimiento (juegos de
+      video, obtener películas, música, videos, escuchar radio, leer periódico, etc.)'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$8
+    type: INTEGER
+    description: '¿Usó el Internet para: Vender productos y/o servicios (Mercado libre,
+      OLX, Facebook, etc.)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$9
+    type: INTEGER
+    description: '¿Usó el Internet para: Otros?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$10
+    type: INTEGER
+    description: '¿Usó el Internet para: Otros?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$11
+    type: INTEGER
+    description: '¿Usó el Internet para: Otros?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316$12
+    type: INTEGER
+    description: '¿Usó el Internet para: Descarga de antivirus/aplicativos/software(programas)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316A1
+    type: INTEGER
+    description: '¿En el mes anterior, Ud. utilizó: Teléfono celular propio?'
+    sentinel_nulls:
+    - 0
+  - name: P316A2
+    type: INTEGER
+    description: '¿En el mes anterior, Ud. utilizó: Teléfono celular de un familiar
+      o amigo/a?'
+    sentinel_nulls:
+    - 0
+  - name: P316A3
+    type: INTEGER
+    description: '¿En el mes anterior, Ud. utilizó: Teléfono celular de su centro
+      de trabajo?'
+    sentinel_nulls:
+    - 0
+  - name: P316A4
+    type: INTEGER
+    description: '¿En el mes anterior, Ud. utilizó: Otro?'
+    sentinel_nulls:
+    - 0
+  - name: P316A5
+    type: INTEGER
+    description: '¿En el mes anterior, Ud. utilizó: No utiliza?'
+    sentinel_nulls:
+    - 0
+  - name: P316A6
+    type: INTEGER
+    description: '¿En el mes anterior, Ud. utilizó: Teléfono celular alquilado?'
+    sentinel_nulls:
+    - 0
+  - name: P316B
+    type: INTEGER
+    description: ¿En los últimos 3 meses¿Ha utilizado una computadora laptop, tablet
+      o similar?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C1
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Copiar o mover un archivo
+      o carpeta?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C2
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Utilizar herramientas
+      de copiar y pegar…?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C3
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Enviar correos electronicos
+      (e-mails) con archivos adjuntos …?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C4
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Utilizar fórmulas aritmeticas
+      basicas en una hoja de cálculo (Excel)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C5
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Conectar e instalar
+      nuevos dispositivos …?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C6
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Encontrar, descargar,
+      instalar y configurar software?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C7
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Crear presentaciones
+      electrónicas con programas para crear presentaciones ?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C8
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Transferir archivos
+      entre computadora y otros dispositivos?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C9
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Redactar un programa
+      informático mediante el uso de lenguaje de programación especializado?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P316C10
+    type: INTEGER
+    description: '¿Actividades informáticas que ha realizado: Otros?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: T313A
+    type: INTEGER
+    description: (Recodificada ) ¿Cuál es la principal razón por la que no está matriculado
+      o no asiste a algún centro o programa de educación básica o superior?
+    semantic_dictionary:
+      '1': Problemas económicos
+      '2': Estoy trabajando
+      '3': 'Terminó sus estudios: secundarios/ superiores /asiste a academia preuniversitaria'
+      '4': No tiene la edad suficiente
+      '5': Problemas familiares
+      '6': De Vacaciones
+      '7': No existe centro de educación básica o superior en el centro poblado
+      '8': Asiste a un centro de educación técnico productivo
+      '9': No me interesa/no me gusta el estudio
+      '10': Se dedica a los quehaceres del hogar
+      '11': Otra razón
+      '12': Asiste a un centro de enseñanza no regular
+      '13': Suspensión de clases por COVID-19
+      '14': Sin señal/equipo tecnológico/internet/electricidad
+      '15': No matriculado por cuarentena
+      '16': Traslado en proceso de centro estudios por COVID-19
+      '17': Institución educativa no licenciada
+      '18': No le gusta las clases virtuales/ No aprende en clases virtuales
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+  - name: P203
+    type: INTEGER
+    description: ¿Cuál es la relación de parentesco con el jefe(a) del hogar?
+    semantic_dictionary:
+      '0': Panel
+      '1': Jefe/Jefa
+      '2': Esposo(a)/compañero(a)
+      '3': Hijo(a)/Hijastro(a)
+      '4': Yerno/Nuera
+      '5': Nieto(a)
+      '6': Padres/Suegros
+      '7': Otros parientes
+      '8': Trabajador Hogar
+      '9': Pensionista
+      '10': Otros no parientes
+      '11': Hermano(a)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+  - name: P204
+    type: INTEGER
+    description: ¿Es miembro del hogar?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P205
+    type: INTEGER
+    description: ¿Se encuentra ausente del hogar 30 días o más?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P206
+    type: INTEGER
+    description: ¿Está presente en el hogar 30 días o más?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P207
+    type: INTEGER
+    description: Sexo
+    semantic_dictionary:
+      '1': Hombre
+      '2': Mujer
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P208A
+    type: INTEGER
+    description: ¿Qué edad tiene en años cumplidos ?
+    sentinel_nulls:
+    - 99
+  - name: P209
+    type: INTEGER
+    description: ¿Cuál es su estado civil o conyugal?
+  - name: IMPUTADO
+    type: INTEGER
+    description: Conglomerado - (Imputación Hot-Deck)
+    semantic_dictionary:
+      '1': Con imputación Hot-Deck
+    constraints:
+    - allowed_values:
+      - 1
+  - name: D311B$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Uniforme, calzado
+      escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?: Programa
+      Social?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Uniforme, calzado escolar, útiles escolares, textos, matrícula,
+      APAFA, mochila, etc?: Programa Social? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Uniforme, calzado escolar, útiles escolares, textos, matrícula,
+      APAFA, mochila, etc?: Programa Social? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Uniforme, calzado escolar, útiles escolares, textos, matrícula,
+      APAFA, mochila, etc?: Programa Social? - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Uniforme, calzado escolar, útiles escolares, textos, matrícula,
+      APAFA, mochila, etc.? - Otros hogares'
+    sentinel_nulls:
+    - 999999
+  - name: D311D6$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Uniforme, calzado escolar, útiles escolares, textos, matrícula,
+      APAFA, mochila, etc.? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Uniforme, calzado escolar, útiles escolares, textos, matrícula,
+      APAFA, mochila, etc.? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$1
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: Uniforme, calzado escolar, útiles escolares,
+      textos, matrícula, APAFA, mochila, etc?: Programa Social?'
+    sentinel_nulls:
+    - 999999
+  - name: D311B$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Calzado Escolar?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Calzado Escolar? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Calzado Escolar? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Calzado Escolar? - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Calzado Escolar? - Otros hogares'
+    sentinel_nulls:
+    - 999999
+  - name: D311D6$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Calzado Escolar? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Calzado Escolar? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$2
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: Calzado Escolar?'
+    sentinel_nulls:
+    - 999999
+  - name: D311B$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Libros y Textos?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Libros y Textos? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Libros y Textos? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Libros y Textos? - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Libros y Textos? - Otros hogares'
+    sentinel_nulls:
+    - 999999
+  - name: D311D6$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Libros y Textos? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Libros y Textos? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$3
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: Libros y Textos?'
+    sentinel_nulls:
+    - 999999
+  - name: D311B$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Útiles Escolares?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Útiles Escolares? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Útiles Escolares? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Utiles escolares - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Útiles Escolares? - Otros hogares'
+    sentinel_nulls:
+    - 999999
+  - name: D311D6$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Útiles Escolares? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Útiles Escolares? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$4
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: Útiles Escolares?'
+    sentinel_nulls:
+    - 999999
+  - name: D311B$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Matrícula?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Matrícula? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Matrícula? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Matrícula? - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Matrícula? - Otros hogares'
+  - name: D311D6$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Matrícula? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Matrícula? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$5
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: Matrícula?'
+    sentinel_nulls:
+    - 999999
+  - name: D311B$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: APAFA?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: APAFA? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: APAFA? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: APAFA? - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: APAFA? - Otros hogares'
+    sentinel_nulls:
+    - 999999
+  - name: D311D6$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: APAFA? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: APAFA? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$6
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: APAFA?'
+    sentinel_nulls:
+    - 999999
+  - name: D311B$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Otro (Fotocopias,
+      cuotas extraordinarias, etc)?'
+    sentinel_nulls:
+    - 999999
+  - name: D311D2$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? - Autoconsumo'
+    sentinel_nulls:
+    - 999999
+  - name: D311D3$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? - Autosuministro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D4$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? - Pago en especie'
+    sentinel_nulls:
+    - 999999
+  - name: D311D5$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? - Otros hogares'
+  - name: D311D6$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? - Programa social'
+    sentinel_nulls:
+    - 999999
+  - name: D311D7$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? - Otro'
+    sentinel_nulls:
+    - 999999
+  - name: D311D$7
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio: Otro (Fotocopias, cuotas extraordinarias,
+      etc)?'
+    sentinel_nulls:
+    - 999999
+  - name: D3121B
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Pensión anual
+      de Enseñanza?'
+    sentinel_nulls:
+    - 999999
+  - name: D3121C2
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto estima el valor de Pensión anual
+      de Enseñanza? - Autosuministro
+    sentinel_nulls:
+    - 999999
+  - name: D3121C3
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto estima el valor de Pensión anual
+      de Enseñanza? - Pago en especie
+    sentinel_nulls:
+    - 999999
+  - name: D3121C4
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto estima el valor de Pensión anual
+      de Enseñanza? - Otros hogares
+    sentinel_nulls:
+    - 999999
+  - name: D3121C5
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto estima el valor de Pensión anual
+      de Enseñanza? - Programa Social
+    sentinel_nulls:
+    - 999999
+  - name: D3121C6
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto estima el valor de Pensión anual
+      de Enseñanza? - Otro
+    sentinel_nulls:
+    - 999999
+  - name: D3121C
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagarlo: Pensión anual de Enseñanza?'
+    sentinel_nulls:
+    - 999999
+  - name: D3122B
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto fue el monto de: Movilidad Particular
+      al centro de enseñanza?'
+    sentinel_nulls:
+    - 999999
+  - name: D3122C2
+    type: INTEGER
+    description: Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad particular
+      al centro de enseñanza? - Autosuministro
+    sentinel_nulls:
+    - 999999
+  - name: D3122C3
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto estima el valor de Pensión anual
+      de Enseñanza? - Pago en especie
+    sentinel_nulls:
+    - 999999
+  - name: D3122C4
+    type: INTEGER
+    description: Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad particular
+      al centro de enseñanza? - Otros hogares
+    sentinel_nulls:
+    - 999999
+  - name: D3122C5
+    type: INTEGER
+    description: Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad particular
+      al centro de enseñanza? - Programa social
+    sentinel_nulls:
+    - 999999
+  - name: D3122C6
+    type: INTEGER
+    description: Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad particular
+      al centro de enseñanza? - Otro
+    sentinel_nulls:
+    - 999999
+  - name: D3122C
+    type: INTEGER
+    description: '(Deflactado, anualizado) ¿Cuánto cree que le costarìa si tuviera
+      que pagarlo: Movilidad Particular al centro de enseñanza?'
+    sentinel_nulls:
+    - 999999
+  - name: D315A
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto fue el monto del servicio en el
+      mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: D315B2
+    type: INTEGER
+    description: (Deflactado, anual) Autosuministro - ¿Cuánto cree que le constaría
+      si tuviera que pagar por este servicio que usó el mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: D315B3
+    type: INTEGER
+    description: (Deflactado, anual) Pago en especie - ¿Cuánto cree que le constaría
+      si tuviera que pagar por este servicio que usó el mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: D315B4
+    type: INTEGER
+    description: (Deflactado, anual) Otros hogares - ¿Cuánto cree que le constaría
+      si tuviera que pagar por este servicio que usó el mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: D315B5
+    type: INTEGER
+    description: (Deflactado, anual) Programa social - ¿Cuánto cree que le constaría
+      si tuviera que pagar por este servicio que usó el mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: D315B6
+    type: INTEGER
+    description: (Deflactado, anual) Otro - ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: D315B
+    type: INTEGER
+    description: (Deflactado, anualizado) ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior?
+    sentinel_nulls:
+    - 999999
+  - name: I311B$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Uniforme,
+      calzado escolar, útiles escolares, textos, matrícula, APAFA, mochila, etc?:
+      Programa Social?'
+  - name: I311B$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Calzado
+      Escolar?'
+  - name: I311B$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Útiles
+      Escolares?'
+  - name: I311B$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: APAFA?'
+  - name: I311B$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Libros
+      y Textos?'
+  - name: I311B$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Matrícula?'
+  - name: I311B$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Otro
+      (Fotocopias, cuotas extraordinarias, etc)?'
+  - name: I311D2$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Uniforme, calzado escolar, útiles escolares, textos,
+      matrícula, APAFA, mochila, etc.? - Autoconsumo'
+  - name: I311D3$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Uniforme, calzado escolar, útiles escolares, textos,
+      matrícula, APAFA, mochila, etc.? - Autosuministro'
+  - name: I311D4$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Uniforme, calzado escolar, útiles escolares, textos,
+      matrícula, APAFA, mochila, etc.? - Pago en especie'
+  - name: I311D5$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Uniforme, calzado escolar, útiles escolares, textos,
+      matrícula, APAFA, mochila, etc.? - Otros hogares'
+  - name: I311D6$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Uniforme, calzado escolar, útiles escolares, textos,
+      matrícula, APAFA, mochila, etc.? - Programa social'
+  - name: I311D7$1
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Uniforme, calzado escolar, útiles escolares, textos,
+      matrícula, APAFA, mochila, etc.? - Otro'
+  - name: I311D2$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Calzado Escolar? - Autoconsumo'
+  - name: I311D3$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Calzado Escolar? - Autosuministro'
+  - name: I311D4$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Calzado Escolar? - Pago en especie'
+  - name: I311D5$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Calzado Escolar? - Otros hogares'
+  - name: I311D6$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Calzado Escolar? - Programa social'
+  - name: I311D7$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Calzado Escolar? - Otro'
+  - name: I311D2$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Útiles Escolares? - Autoconsumo'
+  - name: I311D3$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Útiles Escolares? - Autosuministro'
+  - name: I311D4$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Útiles Escolares? - Pago en especie'
+  - name: I311D5$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Útiles Escolares? - Otros hogares'
+  - name: I311D6$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Útiles Escolares? - Programa social'
+  - name: I311D7$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Útiles Escolares? - Otro'
+  - name: I311D2$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: APAFA? - Autoconsumo'
+  - name: I311D3$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: APAFA? - Autosuministro'
+  - name: I311D4$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: APAFA? - Pago en especie'
+  - name: I311D5$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: APAFA? - Otros hogares'
+  - name: I311D6$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: APAFA? - Programa social'
+  - name: I311D7$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: APAFA? - Otro'
+  - name: I311D2$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Libros y Textos? - Autoconsumo'
+  - name: I311D3$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Libros y Textos? - Autosuministro'
+  - name: I311D4$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Libros y Textos? - Pago en especie'
+  - name: I311D5$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Libros y Textos? - Otros hogares'
+  - name: I311D6$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Libros y Textos? - Programa social'
+  - name: I311D7$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Libros y Textos? - Otro'
+  - name: I311D2$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Matrícula? - Autoconsumo'
+  - name: I311D3$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Matrícula? - Autosuministro'
+  - name: I311D4$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Matrícula? - Pago en especie'
+  - name: I311D5$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Matrícula? - Otros hogares'
+  - name: I311D6$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Matrícula? - Programa social'
+  - name: I311D7$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Matrícula? - Otro'
+  - name: I311D2$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? -
+      Autoconsumo'
+  - name: I311D3$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? -
+      Autosuministro'
+  - name: I311D4$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? -
+      Pago en especie'
+  - name: I311D5$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? -
+      Otros hogares'
+  - name: I311D6$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? -
+      Programa social'
+  - name: I311D7$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por: Otros (Fotocopias, cuotas extraordinarias, etc)? -
+      Otro'
+  - name: I3121B
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Pensión
+      anual de Enseñanza?'
+  - name: I3122B
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto fue el monto de: Movilidad
+      Particular al centro de enseñanza?'
+  - name: I3121C2
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto estima el valor de Pensión
+      anual de Enseñanza? Autosuministro
+  - name: I3121C3
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto estima el valor de Pensión
+      anual de Enseñanza? Pago en especie
+  - name: I3121C4
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto estima el valor de Pensión
+      anual de Enseñanza? Otros hogares
+  - name: I3121C5
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto estima el valor de Pensión
+      anual de Enseñanza? Programa social
+  - name: I3121C6
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto estima el valor de Pensión
+      anual de Enseñanza? Otro
+  - name: I3122C2
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad
+      Particular al Centro de Enseñanza? - Autosuministro
+  - name: I3122C3
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad
+      Particular al Centro de Enseñanza? - Pago en especie
+  - name: I3122C4
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad
+      Particular al Centro de Enseñanza? - Otros hogares
+  - name: I3122C5
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad
+      Particular al Centro de Enseñanza? - Programa Social
+  - name: I3122C6
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto estima el valor de Movilidad
+      Particular al Centro de Enseñanza? - Otro
+  - name: I315A
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto fue el monto del servicio
+      en el mes anterior?
+  - name: I315B2
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior? Autosuministro
+  - name: I315B3
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior? Pago en especie
+  - name: I315B4
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior? Otros hogares
+  - name: I315B5
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior? Programa social
+  - name: I315B6
+    type: INTEGER
+    description: (Imputado, deflactado, anual) ¿Cuánto cree que le constaría si tuviera
+      que pagar por este servicio que usó el mes anterior? Otro
+  - name: I311D$1
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría si
+      tuviera que pagar por este producto o servicio:Uniforme, calzado escolar, útiles
+      escolares, textos, matrícula, APAFA, mochila, etc.?
+  - name: I311D$2
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por este producto o servicio: Calzado Escolar?'
+  - name: I311D$3
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por este producto o servicio: Libros y Textos?'
+  - name: I311D$4
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por este producto o servicio: Útiles Escolares?'
+  - name: I311D$5
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por este producto o servicio: Matrícula?'
+  - name: I311D$6
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por este producto o servicio: APAFA?'
+  - name: I311D$7
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagar por este producto o servicio: Otro (Fotocopias, cuotas
+      extraordinarias, etc)?'
+  - name: I3121C
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costaría
+      si tuviera que pagarlo: Pensión anual de Enseñanza?'
+  - name: I3122C
+    type: INTEGER
+    description: '(Imputado, Deflactado, anualizado) ¿Cuánto cree que le costarìa
+      si tuviera que pagarlo: Movilidad Particular al centro de enseñanza?'
+  - name: I315B
+    type: INTEGER
+    description: (Imputado, Deflactado, anualizado) ¿Cuánto cree que le constaría
+      si tuviera que pagar por este servicio que usó el mes anterior?
+  - name: TICUEST01A
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTORA07
+    type: DOUBLE
+    description: Factor de expansión anual (Metadatos Inferidos de FACTOR07)
+    metadata_inferred: true

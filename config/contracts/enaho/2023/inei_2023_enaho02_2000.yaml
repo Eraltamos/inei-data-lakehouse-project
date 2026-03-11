@@ -1,0 +1,220 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: agriculture
+  silver_name: enaho_agriculture_biz_profile
+  grain: biz
+  description: Perfil del Productor Agropecuario.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho02_2000_raw
+  raw_file_name: Enaho02-2023-2000.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la Persona
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de Informante
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: PERIODO
+    type: INTEGER
+    description: Periodo de Ejecución de la Encuesta
+    semantic_dictionary:
+      '1': Primer Período
+      '2': Segundo Período
+      '3': Tercer Período
+      '4': Cuarto Período
+      '5': Quinto Período  –5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: P20001A
+    type: INTEGER
+    description: ¿Qué tipo de actividad realizó en su explotación agropecuaria en
+      los últimos 12 meses? - Explotación Agrícola
+    semantic_dictionary:
+      '1': Explotación Agrícola
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P20001B
+    type: INTEGER
+    description: ¿Qué tipo de actividad realizó en su explotación agropecuaria en
+      los últimos 12 meses? - Explotación Pecuaria
+    semantic_dictionary:
+      '2': Explotación Pecuaria
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 2
+  - name: P20001C
+    type: INTEGER
+    description: ¿Qué tipo de actividad realizó en su explotación agropecuaria en
+      los últimos 12 meses? - Explotación Forestal
+    semantic_dictionary:
+      '3': Explotación Forestal
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 3
+  - name: P20002
+    type: INTEGER
+    description: '¿Su actividad agropecuaria la realiza en forma:'
+    semantic_dictionary:
+      '1': Permanente
+      '2': Eventual    –2 999.
+    sentinel_nulls:
+    - 999
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P20002B1
+    type: DOUBLE
+    description: ¿Cuál es el área total de la explotación agropecuaria - Propia que
+      trabaja actualmente
+    metadata_inferred: true
+  - name: P20002B2
+    type: DOUBLE
+    description: ¿Cuál es el área total de la explotación agropecuaria - Propia que
+      alquila, presta, cede a9 9o9t.r9o9s9 ( SMuipsesirnfigc ieva tlouteal en Hectáreas)
+  - name: P20002B3
+    type: DOUBLE
+    description: ¿Cuál es el área total de la explotación agropecuaria - Que alquila,
+      recibe o trabaja de otros (Superficie total en Hectáreas)
+  - name: P20002C
+    type: INTEGER
+    description: ¿Cuántas parcelas trabaja o tiene en su poder actualmente? 999.
+    sentinel_nulls:
+    - 999
+  - name: P2200
+    type: INTEGER
+    description: 'En los últimos 12 meses, de su producción ¿Elaboró sub productos
+      transformados tales como: chuño, moron, chochoca, jora, etc, o productos no
+      transformados como: cascarilla de arroz, panca de choclo, etc?'
+    semantic_dictionary:
+      '1': Si  –2
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P2600
+    type: INTEGER
+    description: 'En los últimos 12 meses, de su producción ¿Elaboró sub productos
+      pecuarios tales como: leche, queso, mantequilla, miel de abeja, etc?'
+    semantic_dictionary:
+      '1': Si
+      '2': No  –2
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: TICUEST02
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet  –2
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: TICUEST02
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTORA07
+    type: DOUBLE
+    description: Factor de Expansión anual de Empleo/Ingresos ajustados por grupos
+      de edad. Proyecciones CPV-2007

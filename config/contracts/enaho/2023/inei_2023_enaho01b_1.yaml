@@ -1,0 +1,3282 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: civic
+  silver_name: enaho_civic_pers_governance
+  grain: pers
+  description: Percepción de democracia y corrupción (+18 años).
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01b_1_raw
+  raw_file_name: Enaho01B-2023-1.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la persona
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de informante
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P1$01
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      El Jurado Nacional de Elecciones - JNE?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$02
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Oficina Nacional de Procesos Electorales - ONPE?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$03
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Registro Nacional de Identificación y Estado Civil - RENIEC?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$04
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Municipalidad Provincial?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$05
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Municipalidad Distrital?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$06
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Policia Nacional del Perú?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$07
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Las Fuerzas Armadas?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$08
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      El Gobierno Regional?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$09
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      El Poder Judicial (Juzgados, Juez de Paz, etc.)?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$10
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      El Ministerio de Educación (centros educativos, etc.)'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$11
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Defensoría del Pueblo?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': 'Bastante      Actualmente, ¿Tiene usted confianza en instituciones tales
+        como: El Congreso de la'
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$12
+    type: INTEGER
+    description: República?
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$13
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Los Partidos Políticos?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$14
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Prensa Escrita?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$15
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Radio o Televisión?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$16
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Iglesia Católica?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$17
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Procuraduría Anticorrupción?'
+    semantic_dictionary:
+      '1': Nada
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 3
+      - 4
+  - name: P1$18
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Ministerio Público - Fiscalía de la Nación?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$19
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Contraloría General de la República?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$20
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      Superintendencia Nacional de Aduanas y Administración Tributaria (ADUANAS-SUNAT)?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P1$21
+    type: INTEGER
+    description: 'Actualmente, ¿Tiene usted confianza en instituciones tales como:
+      La Comisión de Alto Nivel Anticorrupción?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2_1$01
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? La Corrupción
+    sentinel_nulls:
+    - 0
+  - name: P2_1$02
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? La falta de credibilidad y transparencia del gobierno
+    sentinel_nulls:
+    - 0
+  - name: P2_1$03
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? La falta de empleo
+    sentinel_nulls:
+    - 0
+  - name: P2_1$04
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Falta de seguridad ciudadana
+    sentinel_nulls:
+    - 0
+  - name: P2_1$05
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Violencia en los hogares
+    sentinel_nulls:
+    - 0
+  - name: P2_1$06
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Falta de cobertura / Mala atención en salud pública
+    sentinel_nulls:
+    - 0
+  - name: P2_1$07
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Falta de cobertura del sistema de seguridad social
+    sentinel_nulls:
+    - 0
+  - name: P2_1$08
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Mala calidad de la educación estatal
+    sentinel_nulls:
+    - 0
+  - name: P2_1$09
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Violación de derechos humanos
+    sentinel_nulls:
+    - 0
+  - name: P2_1$10
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Bajos sueldos / aumento de precios
+    sentinel_nulls:
+    - 0
+  - name: P2_1$11
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Pobreza
+    sentinel_nulls:
+    - 0
+  - name: P2_1$12
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Falta de vivienda
+    sentinel_nulls:
+    - 0
+  - name: P2_1$13
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Falta de apoyo a la agricultura
+    sentinel_nulls:
+    - 0
+  - name: P2_1$14
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Mal funcionamiento de la democracia
+    sentinel_nulls:
+    - 0
+  - name: P2_1$15
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Delincuencia
+    sentinel_nulls:
+    - 0
+  - name: P2_1$16
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Otro
+    sentinel_nulls:
+    - 0
+  - name: P2_1$17
+    type: INTEGER
+    description: En su opinión, actualmente, ¿Cuáles son los principales problemas
+      del país? Ninguno
+    sentinel_nulls:
+    - 0
+  - name: P2_2$01
+    type: INTEGER
+    description: Orden de Prioridad - La Corrupción
+  - name: P2_2$02
+    type: INTEGER
+    description: Orden de Prioridad - La falta de credibilidad y transparencia del
+      gobierno
+  - name: P2_2$03
+    type: INTEGER
+    description: Orden de Prioridad - La falta de empleo
+  - name: P2_2$04
+    type: INTEGER
+    description: Orden de Prioridad - Falta de seguridad ciudadana
+  - name: P2_2$05
+    type: INTEGER
+    description: Orden de Prioridad - Violencia en los hogares
+  - name: P2_2$06
+    type: INTEGER
+    description: Orden de Prioridad - Falta de cobertura / Mala atención en salud
+      pública
+  - name: P2_2$07
+    type: INTEGER
+    description: Orden de Prioridad - Falta de cobertura del sistema de seguridad
+      social
+  - name: P2_2$08
+    type: INTEGER
+    description: Orden de Prioridad - Mala calidad de la educación estatal
+  - name: P2_2$09
+    type: INTEGER
+    description: Orden de Prioridad - Violación de derechos humanos
+  - name: P2_2$10
+    type: INTEGER
+    description: Orden de Prioridad - Bajos sueldos / aumento de precios
+  - name: P2_2$11
+    type: INTEGER
+    description: Orden de Prioridad - Pobreza
+  - name: P2_2$12
+    type: INTEGER
+    description: Orden de Prioridad - Falta de vivienda
+  - name: P2_2$13
+    type: INTEGER
+    description: Orden de Prioridad - Falta de apoyo a la agricultura
+  - name: P2_2$14
+    type: INTEGER
+    description: Orden de Prioridad - Mal funcionamiento de la democracia
+  - name: P2_2$15
+    type: INTEGER
+    description: Orden de Prioridad - Delincuencia
+  - name: P2_2$16
+    type: INTEGER
+    description: Orden de Prioridad - Otro
+  - name: P2_2$17
+    type: INTEGER
+    description: Orden de Prioridad - Ninguno
+  - name: P2A1$1
+    type: INTEGER
+    description: 'En su opinión, ¿La gestión del ... es: Gobierno Central'
+    semantic_dictionary:
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo   / No responde
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2A1$2
+    type: INTEGER
+    description: 'En su opinión, ¿La gestión del ... es: Gobierno Regional'
+    semantic_dictionary:
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo   / No responde
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2A1$3
+    type: INTEGER
+    description: 'En su opinión, ¿La gestión del ... es: Gobierno Local Provincial'
+    semantic_dictionary:
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo   / No responde
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2A1$4
+    type: INTEGER
+    description: 'En su opinión, ¿La gestión del ... es: Gobierno Local Distrital'
+    semantic_dictionary:
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo   / No responde
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2B$01
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2B$02
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '2': 'No'
+      '1': Si
+    constraints:
+    - allowed_values:
+      - 2
+      - 1
+  - name: P2B$03
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '3': El Poder Judicial
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 3
+      - 1
+      - 2
+  - name: P2B$04
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '4': El Registro Nacional de Identificación y Estado Civil- RENIEC
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 4
+      - 1
+      - 2
+  - name: P2B$05
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '5': La Superintendencia Nacional de Aduanas y Administración Tributaria-SUNAT
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 5
+      - 1
+      - 2
+  - name: P2B$06
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '6': La Policía Nacional del Perú
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 6
+      - 1
+      - 2
+  - name: P2B$07
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado trámites en:'
+    semantic_dictionary:
+      '7': La Defensoría del Pueblo
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 7
+      - 1
+      - 2
+  - name: P2B$08
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '8': El Gobierno Regional
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 8
+      - 1
+      - 2
+  - name: P2B$09
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '9': El Ministerio de Agricultura
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 9
+      - 1
+      - 2
+  - name: P2B$10
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '10': El Ministerio Público/Fiscalía de la Nación
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 10
+      - 1
+      - 2
+  - name: P2B$11
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '11': El Jurado Nacional de Elecciones–JNE
+      '1': Si
+      '2': No Rango 1-2
+    constraints:
+    - allowed_values:
+      - 11
+      - 1
+      - 2
+  - name: P2B$12
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '12': La Oficina de Procesos Electorales –ONPE
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 12
+      - 1
+      - 2
+  - name: P2B$13
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '13': El Ministerio de Educación
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 13
+      - 1
+      - 2
+  - name: P2B$14
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado solicitudes en:'
+    semantic_dictionary:
+      '14': Bancos del estado
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 14
+      - 1
+      - 2
+  - name: P2B$15
+    type: INTEGER
+    description: No Rango 1-2 Rango 1-2
+  - name: P2B$16
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado atenciones en:'
+    semantic_dictionary:
+      '16': Hospitales, centros de salud, policlínicos, etc. de EsSalud
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 16
+      - 1
+      - 2
+  - name: P2B$17
+    type: INTEGER
+    description: 'En los últimos 12 meses, ¿Ud. ha realizado atenciones en:'
+    semantic_dictionary:
+      '17': Otros
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 17
+      - 1
+      - 2
+  - name: P2C$01
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.1. La Municipalidad
+      Distrital'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$02
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.2. La Municipalidad
+      Provincial'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$03
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.3. El Poder Judicial'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$04
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.4. El Registro
+      Nacional de Identificación y Estado Civil- RENIEC'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$05
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.5. La Superintendencia
+      Nacional de Aduanas y Administración Tributaria-SUNAT'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$06
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.6. La Policía Nacional
+      del Perú'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$07
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.7. La Defensoría
+      del Pueblo'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$08
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.8. El Gobierno
+      Regional'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$09
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.9. El Ministerio
+      de Agricultura'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$10
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.10. El Ministerio
+      Público/Fiscalía de la Nación'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$11
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.11. El Jurado Nacional
+      de Elecciones–JNE'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$12
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.12. La Oficina
+      de Procesos Electorales –ONPE'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$13
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.13. El Ministerio
+      de Educación'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$14
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.14. Bancos del
+      estado'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$15
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.15. Hospitales,
+      centros de salud, postas médicas o cualquier establecimiento de salud del MINSA'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$16
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.16. Hospitales,
+      centros de salud, policlínicos, etc. de EsSalud'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2C$17
+    type: INTEGER
+    description: '¿Le solicitaron, se sintió obligado(a) a dar, o dio voluntariamente
+      retribuciones como: regalos, propinas, sobornos, coimas, etc.17. Otros'
+    semantic_dictionary:
+      '1': Sí, le solicitaron dar y dio
+      '2': Sí, le solicitaron dar y no dio
+      '3': No, pero dio voluntariamente
+      '4': No le solicitaron
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2D$01
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.1. La Municipalidad Distrital
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$02
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.2. La Municipalidad Provincial
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$03
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.3. El Poder Judicial
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$04
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.4. El Registro Nacional de Identificación y Estado Civil- RENIEC
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$05
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.5. La Superintendencia Nacional de Aduanas y Administración Tributaria-SUNAT
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$06
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.6. La Policía Nacional del Perú
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$07
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.7. La Defensoría del Pueblo
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$08
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.8. El Gobierno Regional
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$09
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.9. El Ministerio de Agricultura
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$10
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.10. El Ministerio Público/Fiscalía de la Nación
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$11
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.11. El Jurado Nacional de Elecciones–JNE
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$12
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.12. La Oficina de Procesos Electorales –ONPE
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$13
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.13. El Ministerio de Educación
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$14
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.14. Bancos del estado
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$15
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.15. Hospitales, centros de salud, postas médicas o cualquier establecimiento
+      de salud del MINSA
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$16
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.16. Hospitales, centros de salud, policlínicos, etc. de EsSalud
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2D$17
+    type: INTEGER
+    description: Cuando le solicitaron o dio voluntariamente los regalos, propinas,
+      coimas, etc.17. Otros
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P2E$01
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$02
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '2': Porque las autoridades no hacen caso
+      '1': Por temor a represalias
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 2
+      - 1
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$03
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '3': Por falta de tiempo
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 3
+      - 1
+      - 2
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$04
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '4': Por No saber ante quienes tendría que denunciar
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 4
+      - 1
+      - 2
+      - 3
+      - 5
+      - 6
+      - 7
+  - name: P2E$05
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '5': Porque obtuvo un beneficio
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 5
+      - 1
+      - 2
+      - 3
+      - 4
+      - 6
+      - 7
+  - name: P2E$06
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '6': Porque dio dinero o regalos como agradecimiento
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 6
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 7
+  - name: P2E$07
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '7': Otro
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+    constraints:
+    - allowed_values:
+      - 7
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+  - name: P2E$08
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '8': El Gobierno Regional
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 8
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$09
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '9': El Ministerio de Agricultura
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 9
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$10
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '10': El Ministerio Público/Fiscalía de la Nación
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 10
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$11
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '11': El Jurado Nacional de Elecciones–JNE
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 11
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$12
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '12': La Oficina de Procesos Electorales –ONPE
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 12
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$13
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '13': El Ministerio de Educación
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 13
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$14
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '14': Bancos del estado
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 14
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$15
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '15': Hospitales, centros de salud, postas médicas o cualquier establecimiento
+        de salud del MINSA
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 15
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$16
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '16': Hospitales, centros de salud, policlínicos, etc. de EsSalud
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 16
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2E$17
+    type: INTEGER
+    description: ¿Cuál fue la razón principal por la que no denunció ante alguna autoridad?
+    semantic_dictionary:
+      '17': Otros
+      '1': Por temor a represalias
+      '2': Porque las autoridades no hacen caso
+      '3': Por falta de tiempo
+      '4': Por No saber ante quienes tendría que denunciar
+      '5': Porque obtuvo un beneficio
+      '6': Porque dio dinero o regalos como agradecimiento
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 17
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P2F$01
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$02
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '2': Bueno
+      '1': Muy bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 2
+      - 1
+      - 3
+      - 4
+  - name: P2F$03
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '3': Malo
+      '1': Muy bueno
+      '2': Bueno
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 3
+      - 1
+      - 2
+      - 4
+  - name: P2F$04
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '4': Muy malo
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 4
+      - 1
+      - 2
+      - 3
+  - name: P2F$05
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '5': La Superintendencia Nacional de Aduanas y Administración Tributaria-SUNAT
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 5
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$06
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '6': La Policía Nacional del Perú
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 6
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$07
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '7': La Defensoría del Pueblo
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 7
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$08
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '8': El Gobierno Regional
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 8
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$09
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '9': El Ministerio de Agricultura
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 9
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$10
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '10': El Ministerio Público/Fiscalía de la Nación
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 10
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$11
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '11': El Jurado Nacional de Elecciones–JNE
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 11
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$12
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '12': La Oficina de Procesos Electorales –ONPE
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 12
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$13
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '13': El Ministerio de Educación
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 13
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$14
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '14': Bancos del estado
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 14
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$15
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '15': Hospitales, centros de salud, postas médicas o cualquier establecimiento
+        de salud del MINSA
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 15
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$16
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '16': Hospitales, centros de salud, policlínicos, etc. de EsSalud
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 16
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P2F$17
+    type: INTEGER
+    description: '¿Cómo calificaria la atención recibida en la(el)..:'
+    semantic_dictionary:
+      '17': Otros
+      '1': Muy bueno
+      '2': Bueno
+      '3': Malo
+      '4': Muy malo
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 17
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P3
+    type: INTEGER
+    description: ¿Sabe Ud. qué es Democracia?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P4
+    type: INTEGER
+    description: ¿Cuál cree Ud. que es la característica más importante de la democracia?
+    semantic_dictionary:
+      '1': Elecciones periódicas, limpias y transparentes
+      '2': Existencia de partidos políticos
+      '3': Economía que asegura el ingreso o salario digno
+      '4': Participación de la gente en el gobierno local
+      '5': Libertad de expresar libremente las ideas
+      '6': El respeto de los derechos de todas las personas
+      '7': Otro
+    sentinel_nulls:
+    - 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P5$1
+    type: INTEGER
+    description: 'En su opinión, en el Perú ¿La democracia sirve: Para elegir autoridades'
+    sentinel_nulls:
+    - 0
+  - name: P5$2
+    type: INTEGER
+    description: 'En su opinión, en el Perú ¿La democracia sirve: Pare ser representados?'
+    sentinel_nulls:
+    - 0
+  - name: P5$3
+    type: INTEGER
+    description: 'En su opinión, en el Perú ¿La democracia sirve: Para lograr el bienestar
+      familiar?'
+    sentinel_nulls:
+    - 0
+  - name: P5$4
+    type: INTEGER
+    description: 'En su opinión, en el Perú ¿La democracia sirve: Para que los derechos
+      de las personas sean respetados?'
+    sentinel_nulls:
+    - 0
+  - name: P5$5
+    type: INTEGER
+    description: 'En su opinión, en el Perú ¿La democracia sirve: No sirve para nada?'
+    sentinel_nulls:
+    - 0
+  - name: P6
+    type: INTEGER
+    description: 'En su opinión, ¿La democracia en el Perú es:'
+    semantic_dictionary:
+      '1': Nada Importante
+      '2': Poco Importante
+      '3': Importante
+      '4': Muy importante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P7
+    type: INTEGER
+    description: 'En el Perú, ¿La democracia funciona:'
+    semantic_dictionary:
+      '1': Muy mal
+      '2': Mal
+      '3': Bien
+      '4': Muy bien
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P8$1
+    type: INTEGER
+    description: '¿Ud. cree que la democracia funciona mal/muy mal, debido: A los
+      políticos?'
+    sentinel_nulls:
+    - 0
+  - name: P8$2
+    type: INTEGER
+    description: '¿Ud. cree que la democracia funciona mal/muy mal, debido: A los
+      ciudadanos?'
+    sentinel_nulls:
+    - 0
+  - name: P8$3
+    type: INTEGER
+    description: '¿Ud. cree que la democracia funciona mal/muy mal, debido: A que
+      las leyes son malas?'
+    sentinel_nulls:
+    - 0
+  - name: P8$4
+    type: INTEGER
+    description: '¿Ud. cree que la democracia funciona mal/muy mal, debido: Otro?'
+    sentinel_nulls:
+    - 0
+  - name: P9
+    type: INTEGER
+    description: ¿Con cuál de las siguientes opiniones, está Ud. más de acuerdo
+    semantic_dictionary:
+      '1': Un gobierno democrático es siempre preferible
+      '2': En algunas circunstancias, es preferible un gobierno autoritario que uno
+        democrático
+      '3': Me da lo mismo que sea democrático o autoritario
+    sentinel_nulls:
+    - 4
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P10$1
+    type: INTEGER
+    description: 'Según usted, en el Perú hay respeto por: ¿La libertad de expresión?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P10$2
+    type: INTEGER
+    description: 'Según usted, en el Perú hay respeto por: ¿La igualdad frente a la
+      ley?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P10$3
+    type: INTEGER
+    description: 'Según usted, en el Perú hay respeto por: ¿La libertad política (poder
+      elegir partidos y candidatos que uno quiera)?'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P10$4
+    type: INTEGER
+    description: Según usted, en el Perú hay respeto por ¿Las elecciones transparentes?
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P21
+    type: INTEGER
+    description: '¿Con qué grupo (comunidad) se siente Ud. más identificado:'
+    semantic_dictionary:
+      '1': Su departamento, provincia, distrito o centro poblado
+      '2': Su etnia o raza
+      '3': Su comunidad campesina, indígena
+      '4': Su grupo o posición religiosa
+      '5': Otro
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: P22_1$01
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P22A_1$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$01
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$02
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '2': 'No'
+      '1': Si
+    constraints:
+    - allowed_values:
+      - 2
+      - 1
+  - name: P22A_1$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$02
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$03
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '3': ¿Su vestimenta?
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 3
+      - 1
+      - 2
+  - name: P22A_1$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$03
+    type: INTEGER
+    description: '¿El/los lugar(es) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo?'
+    sentinel_nulls:
+    - 0
+    metadata_inferred: true
+  - name: P22A_4$03
+    type: INTEGER
+    description: '¿El/los lugar(es) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública (municipalidad, gobierno regional, ministerios,
+      etc.)?'
+    sentinel_nulls:
+    - 0
+    metadata_inferred: true
+  - name: P22A_3$03
+    type: INTEGER
+    description: '¿El/los lugar(es) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle?'
+    sentinel_nulls:
+    - 0
+    metadata_inferred: true
+  - name: P22A_2$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$03
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$04
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '4': ¿Su origen o lugar de residencia?
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 4
+      - 1
+      - 2
+  - name: P22A_1$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$04
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$05
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '5': ¿Sus costumbres?
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 5
+      - 1
+      - 2
+  - name: P22A_1$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$05
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$06
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '6': ¿Su nivel de ingresos/dinero?
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 6
+      - 1
+      - 2
+  - name: P22A_1$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$06
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+  - name: P22_1$07
+    type: INTEGER
+    description: ''
+    sentinel_nulls:
+    - 0
+  - name: P22A_1$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$07
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+  - name: P22_1$08
+    type: INTEGER
+    description: ''
+    sentinel_nulls:
+    - 0
+  - name: P22A_1$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$08
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+  - name: P22_1$09
+    type: INTEGER
+    description: ''
+    sentinel_nulls:
+    - 0
+  - name: P22A_1$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$09
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$10
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '10': ¿Su orientación sexual?
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 10
+      - 1
+      - 2
+  - name: P22A_1$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$10
+    type: INTEGER
+    description: 'Recibió Ud., ingresos por ...: Bono 600?'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$10
+    type: INTEGER
+    description: 'Recibió Ud., ingresos por ...: Bono 600? (frecuencia)'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$10
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$10
+    type: INTEGER
+    description: 'Recibió Ud., ingresos por ...: Bono 600? (Frecuencias)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$11
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '11': ¿Tener alguna discapacidad?
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 11
+      - 1
+      - 2
+  - name: P22A_1$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría o por un policía en la calle'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$11
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P22_1$12
+    type: INTEGER
+    description: 'En los últimos 12 meses, usted se ha sentido discriminado/a en el
+      país por :'
+    semantic_dictionary:
+      '12': ¿Otro? (especifique)
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 12
+      - 1
+      - 2
+  - name: P22A_1$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un centro educativo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_2$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento de salud'
+    sentinel_nulls:
+    - 0
+  - name: P22A_3$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una comisaría'
+    sentinel_nulls:
+    - 0
+  - name: P22A_4$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Una institución pública'
+    sentinel_nulls:
+    - 0
+  - name: P22A_5$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Su centro de trabajo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_6$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un establecimiento comercial'
+    sentinel_nulls:
+    - 0
+  - name: P22A_7$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un espacio público'
+    sentinel_nulls:
+    - 0
+  - name: P22A_8$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: El transporte'
+    sentinel_nulls:
+    - 0
+  - name: P22A_9$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Un evento deportivo'
+    sentinel_nulls:
+    - 0
+  - name: P22A_10$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Internet'
+    sentinel_nulls:
+    - 0
+  - name: P22A_11$12
+    type: INTEGER
+    description: '¿El/los lugar(es ) donde se siente o se ha sentido discriminado/a
+      fue en: Otros (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P203_01
+    type: INTEGER
+    description: ¿Cuál es la relación de parentesco con el jefe(a) del hogar?
+    semantic_dictionary:
+      '0': Panel
+      '1': Jefe/Jefa
+      '2': Esposo(a)/compañero(a)
+      '3': Hijo(a)/Hijastro(a)
+      '4': Yerno/Nuera
+      '5': Nieto(a)
+      '6': Padres/Suegros
+      '7': Otros parientes
+      '8': Trabajador Hogar
+      '9': Pensionista
+      '10': Otros no parientes
+      '11': Hermano(a)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+  - name: P204_01
+    type: INTEGER
+    description: ¿Es miembro del hogar?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P205_01
+    type: INTEGER
+    description: ¿Se encuentra ausente del hogar 30 días o más?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P206_01
+    type: INTEGER
+    description: ¿Está presente en el hogar 30 días o más?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P207_01
+    type: INTEGER
+    description: Sexo
+    semantic_dictionary:
+      '1': Hombre
+      '2': Mujer
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P208_01
+    type: INTEGER
+    description: ¿Qué edad tiene en años cumplidos?
+  - name: P209_01
+    type: INTEGER
+    description: ¿Cuál es su estado civil o conyugal?
+    semantic_dictionary:
+      '1': Conviviente
+      '2': Casado(a)
+      '3': Viudo(a)
+      '4': Divorciado(a)
+      '5': Separado(a)
+      '6': Soltero(a)
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+  - name: P301_01
+    type: INTEGER
+    description: ¿Cuál es el último año o grado de estudios y nivel que aprobó? Nivel
+    semantic_dictionary:
+      '1': Sin nivel
+      '2': Educación Inicial
+      '3': Primaria incompleta
+      '4': Primaria completa
+      '5': Secundaria incompleta
+      '6': Secundaria completa
+      '7': Superior no Universitaria Incompleta
+      '8': Superior no Universitaria Completa
+      '9': Superior Universitaria Incompleta
+      '10': Superior Universitaria Completa
+      '11': Maestria/Doctorado
+      '12': Básica especial
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+  - name: TICUEST01B
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FAMIEGOB07
+    type: DOUBLE
+    description: Factor de Expansión Anual de Gobernabilidad Proyecciones CPV-2007

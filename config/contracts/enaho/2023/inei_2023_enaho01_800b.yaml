@@ -1,0 +1,191 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: civic
+  silver_name: enaho_civic_item_pers_details
+  grain: item
+  description: 'Detalle: Qué persona participa en qué organización.'
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01_800b_raw
+  raw_file_name: Enaho01-2023-800B.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: CODPERSO
+    type: VARCHAR
+    description: Código de la persona que pertenece o participa en algún grupo, organización
+      y/o asociación
+  - name: P803
+    type: INTEGER
+    description: ¿El grupo, organización y/o asociación al cual pertenece es?
+    semantic_dictionary:
+      '1': Clubes y asociaciones deportivas
+      '2': Agrupación o partido político
+      '3': Clubes culturales (danza, música,etc.)
+      '4': Asociación vecinal / Junta vecinal
+      '5': Ronda campesina
+      '6': Asociación de regantes
+      '7': Asociación profesional
+      '8': Asociación de trabajadores o sindicato
+      '9': Club de madres
+      '10': Asociación de padres de familia (APAFA)
+      '11': Vaso de leche
+      '12': Comedor popular
+      '13': Comité local administrativo de salud (CLAS)
+      '14': Proceso de presupuesto participativo
+      '15': Concejo de coordinación local distrital (CCLD)
+      '16': Comunidad campesina
+      '17': Asociación Agropecuaria
+      '18': Otro/a
+      '19': No pertenece, no participa
+      '20': Participación en la preparación de desayuno y/o almuerzo escolar    –
+        20
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+  - name: P804
+    type: INTEGER
+    description: 'Participa, ¿ Cómo :'
+    semantic_dictionary:
+      '1': Dirigente/representante
+      '2': Miembro activo
+      '3': Miembro no activo
+      '4': Otro    – 4
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P805
+    type: INTEGER
+    description: ¿Cómo accedió al grupo, organización y/o asociación:?
+    semantic_dictionary:
+      '1': Fue elegido en proceso de elección
+      '2': Por amistad
+      '3': Fue designado o seleccionado
+      '4': Porque pagó
+      '5': Por afiliación
+      '6': Otro    – 6
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+  - name: TICUEST01
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de expansión anual proyecciones CPV-2007

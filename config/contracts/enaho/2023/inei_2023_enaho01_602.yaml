@@ -1,0 +1,239 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: food_expenses
+  silver_name: enaho_food_expenses_item_charity
+  grain: item
+  description: Alimentos obtenidos de instituciones benéficas.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01_602_raw
+  raw_file_name: Enaho01-2023-602.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P602N
+    type: INTEGER
+    description: Alimentos por Instituciones Benéficas (Alimentos para consumir dentro
+      del hogar obtenidos por instituciones ben
+    semantic_dictionary:
+      '1': Vaso de Leche preparado
+      '2': Desayuno - Comedor popular
+      '3': Almuerzo - Comedor popular
+      '4': Cena - Comedor popular
+      '5': Desayuno - Otros
+      '6': Almuerzo - Otros
+      '7': Cena - Club de Madres, y otros
+      '8': Cena - Club de Madres
+      '9': Almuerzo - Club de Madres
+      '10': Cena - Club de Madres
+      '11': Desayuno- Cocina Popular
+      '12': Almuerzo - Cocina Popular
+      '13': Cena - Cocina Popular
+      '14': Desayuno- Olla común
+      '15': Almuerzo - Olla común
+      '16': Cena - Olla común
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+  - name: P602
+    type: INTEGER
+    description: ¿En los últimos 15 días Ud. o algún miembro de este hogar obtuvieron,
+      compraron o le regalaron alimentos para consumir en el hogar de:?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P602A
+    type: INTEGER
+    description: Generalmente, ¿Cuántas veces por semana?
+  - name: P602B
+    type: INTEGER
+    description: Generalmente, ¿Cuántas raciones recibieron cada vez?
+    sentinel_nulls:
+    - 99
+  - name: P602C
+    type: INTEGER
+    description: Generalmente, ¿Cuántos miembros de su hogar consumieron cada vez?
+    sentinel_nulls:
+    - 99
+  - name: P602DA
+    type: INTEGER
+    description: '¿Pagó: por el alimento?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Pagó por el alimento  ,1
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P602DB
+    type: INTEGER
+    description: '¿Pagó: por otros pagos asociados (Transporte del alimento, kerosene,
+      cocinera,etc)'
+    semantic_dictionary:
+      '0': Pase
+      '2': Pagó por otros pagos asociados(Transporte del alimento, kerosene, cocinera,
+        etc)  ,2
+    constraints:
+    - allowed_values:
+      - 0
+      - 2
+  - name: P602DC
+    type: INTEGER
+    description: No realizó ningún pago
+    semantic_dictionary:
+      '0': Pase
+      '3': No realizó ningún pago  ,3
+    constraints:
+    - allowed_values:
+      - 0
+      - 3
+  - name: P602D1_3
+    type: INTEGER
+    description: 'No realizo ningun pago porque:'
+    semantic_dictionary:
+      '1': Apoya en la preparación de alimentos
+    constraints:
+    - allowed_values:
+      - 1
+  - name: D602E2
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto pagó en el mes anterior por otros
+      conceptos? 999999.
+    sentinel_nulls:
+    - '9'
+    required: false
+    data_missing: true
+  - name: I602E1
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto pagó cada vez por el alimento
+      recibido?
+  - name: I602E2
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto pagó en el mes anterior
+      por otros conceptos?
+  - name: TICUEST01
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de expansión anual proyecciones CPV-2007
+  - name: D602E1
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true
+  - name: P602E1
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true
+  - name: P602E2
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true

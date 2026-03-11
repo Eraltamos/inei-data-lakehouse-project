@@ -1,0 +1,179 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: microenterprise
+  silver_name: enaho_microenterprise_item_costs
+  grain: item
+  description: Transacciones de costos operativos.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho04_p23_raw
+  raw_file_name: Enaho04-2023-3-Preg-23.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: ACTIVIDA
+    type: INTEGER
+    description: Condición de la actividad laboral (Principal/Secundaria)
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    semantic_dictionary:
+      1: Actividad Principal
+      2: Actividad Secundaria
+  - name: AÑO
+    type: VARCHAR
+    description: Actividad de la persona
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la persona
+  - name: UBIGEO
+    type: VARCHAR
+    description: Código de Ubicación Geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de Informante
+  - name: PERIODO
+    type: INTEGER
+    description: Período de ejecución de la Encuesta
+    semantic_dictionary:
+      '1': Primer Período
+      '2': Segundo Período
+      '3': Tercer Período
+      '4': Cuarto Período
+      '5': 'Quinto Período Archivo : ENAHO04-2023-1-Preg-23  –5'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: CONCEPTO
+    type: VARCHAR
+    description: Concepto (Otros Gastos)
+  - name: E23A
+    type: INTEGER
+    description: 'Otros Gastos en el mes anterior:'
+    semantic_dictionary:
+      '1': Si
+      '2': No  –2
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E23C
+    type: INTEGER
+    description: 'Otros Gastos en el mes anterior: Frecuencia'
+    semantic_dictionary:
+      '0': Ninguno
+      '1': Mensual
+      '2': Bimestral
+      '3': Trimestral
+      '4': Semestral
+      '5': Anual  –5
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: E23G
+    type: INTEGER
+    description: 'Otros Gastos en el mes anterior: Monto Frecuencia (S/.)'
+    sentinel_nulls:
+    - 999999
+  - name: E23GG
+    type: INTEGER
+    description: Variable derivada inferida (Hermana de E23G)
+    sentinel_nulls:
+    - 999999
+    metadata_inferred: true
+  - name: TICUEST01B
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    required: false
+    data_missing: true
+  - name: FACTORA07
+    type: DOUBLE
+    description: Factor de Expansión anual de Empleo/Ingresos ajustados por grupos
+      de edad. Proyecciones CPV-2007

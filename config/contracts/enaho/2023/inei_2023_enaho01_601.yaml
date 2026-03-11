@@ -1,0 +1,288 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: food_expenses
+  silver_name: enaho_food_expenses_item_in
+  grain: item
+  description: Transacciones de alimentos consumidos en casa.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01_601_raw
+  raw_file_name: Enaho01-2023-601.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P601X
+    type: VARCHAR
+    description: Nombre del producto
+  - name: P601B
+    type: INTEGER
+    description: En los últimos 15 días, del ... al... Ud. y/o algún miembro de este
+      hogar obtuvieron, c1o. n Ssiumieron, compraron o le regalaron alguno de los
+      siguientes productos?
+    semantic_dictionary:
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 2
+  - name: P601A
+    type: INTEGER
+    description: '¿CÓMO OBTUVIERON EL(LA)……… '
+    sentinel_nulls:
+    - 0
+    metadata_inferred: true
+  - name: P601A1
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Comprado'
+    sentinel_nulls:
+    - 0
+  - name: P601A2
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Autoconsumo'
+    sentinel_nulls:
+    - 0
+  - name: P601A3
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Autosuministro'
+    sentinel_nulls:
+    - 0
+  - name: P601A4
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Como parte de pago a un miembro del hogar'
+    sentinel_nulls:
+    - 0
+  - name: P601A5
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Regalado o pagado por algún miembro de
+      otro hogar'
+    sentinel_nulls:
+    - 0
+  - name: P601A6
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Regalado o donado por algún programa
+      social'
+    sentinel_nulls:
+    - 0
+  - name: P601A7
+    type: INTEGER
+    description: 'Cómo obtuvieron el(la)...: Otro'
+    sentinel_nulls:
+    - 0
+  - name: P601B1
+    type: INTEGER
+    description: ¿Con que frecuencia compró el producto?
+    sentinel_nulls:
+    - 0
+  - name: P601B2
+    type: DOUBLE
+    description: ¿Cuál fue la cantidad de compra? - Cantidad 999999.
+    sentinel_nulls:
+    - '99'
+  - name: P601B3
+    type: INTEGER
+    description: ¿Cuál fue la cantidad de compra? - Unidad de Medida
+    semantic_dictionary:
+      '1': Unidad
+      '2': Gramos
+      '3': Pan de molde grande
+      '4': Pan de molde mediano
+      '5': Pan de molde chico
+      '9': Kilo
+      '11': Litro
+      '12': Lata grande
+      '13': Lata chica
+      '15': Botella grande
+      '16': Botella mediana
+      '17': Botella chica
+      '21': Cojin chico
+      '29': Filtrante
+      '30': Lata grande
+      '32': Lata chica  ,9,11-13,15-17,21,29-30,32
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 9
+      - 11
+      - 12
+      - 13
+      - 15
+      - 16
+      - 17
+      - 21
+      - 29
+      - 30
+      - 32
+  - name: P601B4
+    type: DOUBLE
+    description: ¿Dónde lo compró?
+    sentinel_nulls:
+    - '0'
+  - name: P601C
+    type: INTEGER
+    description: ¿Cuánto fue el monto total de la compra? 999999.
+    sentinel_nulls:
+    - 9
+  - name: P601D1
+    type: INTEGER
+    description: ¿Con que frecuencia obtuvo el producto?
+    sentinel_nulls:
+    - 0
+  - name: P601D2
+    type: DOUBLE
+    description: Cuál fue la cantidad consumida en ese periodo? - Cantidad
+    semantic_dictionary:
+      '1': Unidad
+      '2': Gramos
+      '9': Kilo
+      '11': Litro
+      '12': Lata grande
+      '13': Lata chica
+      '15': Botella grande
+      '16': Botella mediana
+      '17': Botella chica
+      '21': Cojin chico
+      '29': Filtrante
+      '30': Lata grande
+      '32': Lata chica  ,9,11-13,15-17,21,29-30,32
+    constraints:
+    - allowed_values:
+      - '1'
+      - '2'
+      - '9'
+      - '11'
+      - '12'
+      - '13'
+      - '15'
+      - '16'
+      - '17'
+      - '21'
+      - '29'
+      - '30'
+      - '32'
+  - name: P601D3
+    type: INTEGER
+    description: Cuál fue la cantidad consumida en ese periodo? - Unidad de Medida
+      999999.
+    sentinel_nulls:
+    - 9
+  - name: I601B2
+    type: DOUBLE
+    description: (Imputado, anualizado) Cantidad de compra en kilo
+  - name: I601C
+    type: DOUBLE
+    description: (Imputado, anualizado) Monto de la compra
+  - name: I601D2
+    type: DOUBLE
+    description: (Imputado, anualizado) Cantidad obtenida en kilo
+  - name: D601C
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto fue el monto total de la compra?
+  - name: I601E
+    type: DOUBLE
+    description: (Imputado, anualizado) Monto estimado
+  - name: PRODUC61
+    type: INTEGER
+    description: Código del producto
+  - name: BLIBRE23
+    type: INTEGER
+    description: Bien Libre
+  - name: T601A71
+    type: INTEGER
+    description: 'Obtuvo el producto: Otro Sin bienes libres'
+  - name: T601A72
+    type: INTEGER
+    description: 'Obtuvo el producto: Otro Bienes libres'
+  - name: TICUEST01
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de expansión anual proyecciones CPV-2007

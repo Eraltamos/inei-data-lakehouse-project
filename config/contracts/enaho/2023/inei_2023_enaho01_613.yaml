@@ -1,0 +1,382 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: social_progs
+  silver_name: enaho_social_progs_hhold_foodbank_base
+  grain: hhold
+  description: Contexto de acceso a la Olla Común por hogar.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01_613_raw
+  raw_file_name: Enaho01-2023-613.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: INFBENEF
+    type: INTEGER
+    description: Informante
+  - name: P613A
+    type: INTEGER
+    description: En los últimos 12 meses, en la zona donde está ubicada su vivienda,
+      ¿Ha existido o e1x.Sisite una Olla Común?
+    semantic_dictionary:
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 2
+  - name: P613B
+    type: INTEGER
+    description: En los últimos 12 Meses, ¿En su hogar obtuvieron, compraron o le
+      regalaron alimentos de la Olla Común?
+    semantic_dictionary:
+      '1': Si
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P613C
+    type: INTEGER
+    description: Nombre de la Olla Común del cual recibe o recibió los alimentos
+  - name: P613D1
+    type: INTEGER
+    description: ¿Por qué razón en su hogar no obtuvieron alimentos de la olla común?
+      - Tengo suficientes ingresos/no necesito
+    semantic_dictionary:
+      '0': Pase
+      '1': Tengo suficientes ingresos/no necesito  ,1
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P613D2
+    type: INTEGER
+    description: ¿Por qué razón en su hogar no obtuvieron alimentos de la olla común?
+      - Recibo alimentos preparados regalados por miembros de otro hogar
+    semantic_dictionary:
+      '0': Pase
+      '2': Recibó alimentos preparados regalados por miembros de otro hogar  ,2
+    constraints:
+    - allowed_values:
+      - 0
+      - 2
+  - name: P613D3
+    type: INTEGER
+    description: ¿Por qué razón en su hogar no obtuvieron alimentos de la olla común?
+      - Recibo alimentos crudos regalados por miembros de otro hogar
+    semantic_dictionary:
+      '0': Pase
+      '3': Recibo alimentos crudos regalados por miembros de otro hogar  ,3
+    constraints:
+    - allowed_values:
+      - 0
+      - 3
+  - name: P613D4
+    type: INTEGER
+    description: ¿Por qué razón en su hogar no obtuvieron alimentos de la olla común?
+      - Su vivienda no pertenece a la jurisdicción donde está ubicada la olla
+    semantic_dictionary:
+      '0': Pase
+      '4': Su vivienda no pertenece a la jurisdicción donde está ubicada la olla
+    constraints:
+    - allowed_values:
+      - 0
+      - 4
+  - name: P613D5
+    type: INTEGER
+    description: ¿Por qué razón en su hogar no obtuvieron alimentos de la olla común?
+      - No cumple con los requisitos
+    semantic_dictionary:
+      '0': Pase
+      '5': No cumple con los requisitos  ,5
+    constraints:
+    - allowed_values:
+      - 0
+      - 5
+  - name: P613D6
+    type: INTEGER
+    description: ¿Por qué razón en su hogar no obtuvieron alimentos de la olla común?
+      - Otra razón(Especifique)
+    semantic_dictionary:
+      '0': Pase
+      '6': Otra razón  ,6
+    constraints:
+    - allowed_values:
+      - 0
+      - 6
+  - name: P613E1
+    type: INTEGER
+    description: ¿Cuál es la razón por la que su hogar recibió alimentos de la olla
+      común? - No tenía trabajo
+    semantic_dictionary:
+      '0': Pase
+      '1': No tenía trabajo  ,1
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P613E2
+    type: INTEGER
+    description: ¿Cuál es la razón por la que su hogar recibió alimentos de la olla
+      común? - Sus ingresos no le alcanzaban
+    semantic_dictionary:
+      '0': Pase
+      '2': Sus ingresos no le alcanzaban  ,2
+    constraints:
+    - allowed_values:
+      - 0
+      - 2
+  - name: P613E3
+    type: INTEGER
+    description: ¿Cuál es la razón por la que su hogar recibió alimentos de la olla
+      común? - Vendían a precio económico .
+    semantic_dictionary:
+      '0': Pase
+      '3': Vendían a precio económico  ,3
+    constraints:
+    - allowed_values:
+      - 0
+      - 3
+  - name: P613E4
+    type: INTEGER
+    description: ¿Cuál es la razón por la que su hogar recibió alimentos de la olla
+      común? - Por falta de tiempo para cocinar
+    semantic_dictionary:
+      '0': Pase
+      '4': Por falta de tiempo para cocinar  ,4
+    constraints:
+    - allowed_values:
+      - 0
+      - 4
+  - name: P613E5
+    type: INTEGER
+    description: ¿Cuál es la razón por la que su hogar recibió alimentos de la olla
+      común? - Otra razón(Especifique)
+    semantic_dictionary:
+      '0': Pase
+      '5': Otra razón  ,5
+    constraints:
+    - allowed_values:
+      - 0
+      - 5
+  - name: P613F1
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F2
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F3
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F4
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F5
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F6
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F7
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F8
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F9
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F10
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F11
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613F12
+    type: INTEGER
+    description: En los últimos 12 meses, ¿En qué mes/meses su hogar recibió alimentos
+      de la olla común?
+  - name: P613FM
+    type: INTEGER
+    description: En los ultimos 3 meses, ¿En que mes su hogar recibio alimentos de
+      la Olla Comun?
+  - name: P613FA
+    type: INTEGER
+    description: En los últimos 3 meses, ¿En que año su hogar recibio alimentos de
+      la Olla Comun?
+  - name: P613G1
+    type: INTEGER
+    description: 'Los alimentos recibidos fueron: Preparados'
+    semantic_dictionary:
+      '0': Pase
+      '1': Preparados  ,1
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P613G2
+    type: INTEGER
+    description: 'Los alimentos recibidos fueron: Crudos'
+    semantic_dictionary:
+      '0': Pase
+      '2': Crudos  ,2
+    constraints:
+    - allowed_values:
+      - 0
+      - 2
+  - name: P613I1
+    type: INTEGER
+    description: ¿Por qué dejó de obtener alimentos de la olla común? - Conseguí trabajo/ya
+      no necesita
+    semantic_dictionary:
+      '0': Pase
+      '1': Conseguí trabajo/ya no necesita  ,1
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P613I2
+    type: INTEGER
+    description: ¿Por qué dejó de obtener alimentos de la olla común? - Subió de precio
+    semantic_dictionary:
+      '0': Pase
+      '2': Subió de precio  ,2
+    constraints:
+    - allowed_values:
+      - 0
+      - 2
+  - name: P613I3
+    type: INTEGER
+    description: ¿Por qué dejó de obtener alimentos de la olla común? - Sirven poco
+    semantic_dictionary:
+      '0': Pase
+      '3': Sirven poco  ,3
+    constraints:
+    - allowed_values:
+      - 0
+      - 3
+  - name: P613I4
+    type: INTEGER
+    description: ¿Por qué dejó de obtener alimentos de la olla común? - Dispongo de
+      tiempo para cocinar
+    semantic_dictionary:
+      '0': Pase
+      '4': Dispongo de tiempo para cocinar  ,4
+    constraints:
+    - allowed_values:
+      - 0
+      - 4
+  - name: P613I5
+    type: INTEGER
+    description: ¿Por qué dejó de obtener alimentos de la olla común? - Otra razón
+      (especifique)
+    semantic_dictionary:
+      '0': Pase
+      '5': Otra razón  ,5
+    constraints:
+    - allowed_values:
+      - 0
+      - 5
+  - name: TICUEST01
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de expansión anual proyecciones CPV-2007

@@ -1,0 +1,339 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: non_food_expenses
+  silver_name: enaho_non_food_expenses_item_clothing
+  grain: item
+  description: Vestido, calzado y telas.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01_607_raw
+  raw_file_name: Enaho01-2023-607.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P607N
+    type: INTEGER
+    description: Productos y/o servicios (Vestido y calzado)
+  - name: P607
+    type: INTEGER
+    description: En los últimos 3 meses, Ud o algún miembro de este hogar obtuvieron,
+      consiguieron o
+    semantic_dictionary:
+      '1': Si
+      '2': No    – 2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P607A1
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Comprado'
+    semantic_dictionary:
+      '0': Pase
+      '1': Comprado
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P607A2
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Autoconsumo'
+    semantic_dictionary:
+      '0': Pase
+      '1': Autoconsumo
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P607A3
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Autosuministro'
+    semantic_dictionary:
+      '0': Pase
+      '1': Autosuministro
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P607A4
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Como parte de pago a un miembro del
+      hogar'
+    semantic_dictionary:
+      '0': Pase
+      '1': Como parte de pago a un miembro del hogar
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P607A5
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Regalado o pagado por miembro de
+      otro hogar'
+    semantic_dictionary:
+      '0': Pase
+    constraints:
+    - allowed_values:
+      - 0
+  - name: P607A6
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Donado por alguna institución o programa
+      social'
+  - name: P607A7
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: Otro'
+  - name: P607A8
+    type: INTEGER
+    description: '¿Cómo obtuvieron el(la) ... ?: No sabe/no responde'
+  - name: P607AA
+    type: INTEGER
+    description: ¿Dónde lo compró?
+    semantic_dictionary:
+      '1': Ambulante
+      '2': Bodega (por menor)
+      '3': Bodega (por mayor)
+      '4': Tienda especializada al por mayor
+      '5': Tienda especializada al por menor
+      '6': Bazar
+      '7': Mercado (por menor)
+      '8': Mercado (por mayor)
+      '9': Supermercado
+      '10': Camioneta, camión
+      '11': Feria
+      '12': Otro
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+  - name: P607B
+    type: DOUBLE
+    description: ¿Cuánto fue el monto total por la compra o servicio ? 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C2
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por este producto
+      o servicio? - Autoconsumo 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C3
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por este producto
+      o servicio? - Autosuministro 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C4
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por este producto
+      o servicio? - Como parte de pago a un miembro del hogar 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C5
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por este producto
+      o servicio? - Regalado por miembro de otro hogar 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C6
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por este producto
+      o servicio? - Donado por institución o programa social 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C7
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaria si tuviera que pagar por este producto
+      o servicio? - Otro 999999.
+    sentinel_nulls:
+    - '9'
+  - name: P607C
+    type: DOUBLE
+    description: ¿Cuánto cree que le costaría si tuviera que pagar por este producto
+      o servicio? 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607B
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto fue el monto total por la compra
+      o servicio? 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C2
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaria si tuviera
+      que pagar por este producto o servicio? - Autoconsumo 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C3
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaria si tuviera
+      que pagar por este producto o servicio? - Autosuministro 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C4
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaria si tuviera
+      que pagar por este producto o servicio? - Como parte de pago a un miembro del
+      hogar 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C5
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaria si tuviera
+      que pagar por este producto o servicio? - Regalado por miembro de otro hogar
+      999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C6
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaria si tuviera
+      que pagar por este producto o servicio? - Donado por alguna institución o programa
+      social 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C7
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaria si tuviera
+      que pagar por este producto o servicio? - Otro 999999.
+    sentinel_nulls:
+    - '9'
+  - name: D607C
+    type: DOUBLE
+    description: (Deflactado, anualizado) ¿Cuánto cree que le costaría si tuviera
+      que pagar por este producto o servicio? 999999.
+    sentinel_nulls:
+    - '9'
+  - name: I607B
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto fue el monto total por
+      la compra o servicio?
+  - name: I607C2
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto cree que le costaria si
+      tuviera que pagar por este producto o servicio? - Autoconsumo
+  - name: I607C3
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto cree que le costaria si
+      tuviera que pagar por este producto o servicio? - Autosuministro
+  - name: I607C4
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto cree que le costaria si
+      tuviera que pagar por este producto o servicio? - Como parte de pago
+  - name: I607C5
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto cree que le costaria si
+      tuviera que pagar
+  - name: I607C6
+    type: DOUBLE
+    description: p(Iomr peusttaed por,o ddeufclatoct aod soe,r avincuioa?li z-a Rdeog)
+      a¿lCaduoá nptoor cmreieem qbureo led ec oostrtoa rhiao gsai rtuviera que pagar
+      por este producto o servicio? - Donado por institución o programa social
+  - name: I607C7
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto cree que le costaria si
+      tuviera que pagar por este producto o servicio? - Otro
+  - name: I607C
+    type: DOUBLE
+    description: (Imputado, deflactado, anualizado) ¿Cuánto cree que le costaría si
+      tuviera que pagar por este producto o servicio?
+  - name: TICUEST01
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de expansión anual proyecciones CPV-2007

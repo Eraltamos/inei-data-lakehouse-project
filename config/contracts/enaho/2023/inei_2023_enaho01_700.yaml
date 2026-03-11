@@ -1,0 +1,566 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: social_progs
+  silver_name: enaho_social_progs_hhold_access
+  grain: hhold
+  description: Flags (Sí/No) de acceso a programas sociales.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01_700_raw
+  raw_file_name: Enaho01-2023-700.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P700I
+    type: VARCHAR
+    description: Código del Informante del Capítulo 700
+  - name: P701$01
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Vaso de leche?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Vaso de leche
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$02
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Comedor popular
+      (incluye club de madres)?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Comedor popular (incluye club de madres)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$03
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Desayunos Escolares
+      en Instituciones Educativas de Inicial, PRONOEI o Primaria – QALI WARMA?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Desayunos Escolares en Instituciones Educactivas de Inicial, PRONOEI o
+        Primaria - QALI WARMA
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$04
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Almuerzos Escolares
+      en Instituciones Educativas de Inicial, PRONOEI o Primaria – QALI WARMA?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Almuerzos Escolares en Instituciones Educactivas de Inicial, PRONOEI o
+        Primaria - QALI WARMA
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$05
+    type: INTEGER
+    description: En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como:Atención Alimentaria
+      Wawa Wasi /Cuna Más (Servicio de cuidado diurno)?
+    semantic_dictionary:
+      '0': Pase
+      '1': Atención Alimentaria Wawa Wasi / Cuna Más (Servicio de cuidado diurno)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$06
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Otro/a - especifique?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Otro/a
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$07
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Otro/a - especifique?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Otro/a
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$08
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Otro/a - especifique?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Otro/a
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$09
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: No recibió?'
+    semantic_dictionary:
+      '0': Pase
+      '1': No recibió
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P701$10
+    type: INTEGER
+    description: 'En los últimos tres meses, ¿Ud. o algún miembro de su hogar ha recibido
+      ayuda alimentaria o nutricional de algún programa social como: Canasta de víveres
+      otorgada por el municipio?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Canasta de víveres otorgada por el municipio
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710I
+    type: VARCHAR
+    description: Código del Informante del Capítulo 700A
+  - name: P710$01
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Nacional Wawa Wasi/Cuna Mas-Cuidado Diurno?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Nacional Wawa Wasi/Cuna Más-Cuidado Diurno
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$02
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Nacional Wawa Wasi/Cuna Mas-Acompañamiento a familias?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Nacional Wawa Wasi/Cuna Más-Acompañamiento a familias
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$03
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Nacional contra la Violencia Familiar y Sexual - Centro
+      de Emergencia Mujer (CEN)?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Nacional contra la Violencia Familiar y Sexual - Centro de Emergencia
+        Mujer (CEN)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$04
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa de Apoyo Directo a los más Pobres JUNTOS?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa de Apoyo Directo a los más Pobres - JUNTOS
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$05
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Pensión 65?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Pensión 65
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$06
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa de Alfabetización – PNA/DIALFA (antes PRONAMA)?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa de Alfabetización – PNA/DIALFA (antes PRONAMA)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$07
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa de Capacitación Laboral Juvenil Jóvenes Productivos?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Nacional para la Generación de Empleo Social Inclusivo Trabaja
+        Perú
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$09
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Nacional para la promoción de oportunidades laborales
+      Impulsa Perú?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Nacional para la promoción de oportunidades laborales - Impulsa
+        Perú
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$10
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Beca 18?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Beca 18
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$11
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Otro/a?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Otro/a
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$12
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Otro/a?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Otro/a
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$13
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Otro/a?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Otro/a
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$14
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: No recibió'
+    semantic_dictionary:
+      '0': Pase
+      '1': No recibió
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$15
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Programa Bono Gas-FISE?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Bono Gas-FISE
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$16
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono Yo Me Quedo en Casa(MIDIS)?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Bono Yo me quedo en casa(MIDIS)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$17
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono Independiente(Ministerio de Trabajo)?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Bono Independiente (Ministerio de Trabajo)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$18
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono Rural?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Bono Rural
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$19
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono Familiar Universal?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa Bono Familiar Universal
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$20
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Retiro CTS por aislamiento social?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Retiro CTS por aislamiento social
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$21
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Retiro AFP'
+    semantic_dictionary:
+      '0': Pase
+      '1': Retiro AFP
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$22
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Beneficio del no descuento de AFP por ser aportante activo?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Beneficio del no descuento de AFP por ser aportante activo
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$23
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Asistencia económica por orfandad por COVID 19?'
+    semantic_dictionary:
+      '1': Asistencia económica por orfandad por COVID 19
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P710$28
+    type: INTEGER
+    description: 'En los ultimos tres años, ¿Ud. o algun miembro de su hogar ha sido
+      beneficiario de: Programa de dotacion de material educativo'
+    semantic_dictionary:
+      '0': Pase
+      '1': Programa de dotacion de material educativo
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$29
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono Yanapay'
+    semantic_dictionary:
+      '0': Pase
+      '1': Bono Yanapay
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$30
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono 600?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Bono 600
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$31
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono Wanuchay?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Bono Bono Wanuchay
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$32
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Bono 210?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Bono 210
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: P710$33
+    type: INTEGER
+    description: 'En los últimos tres años, ¿Ud. o algún miembro de su hogar ha sido
+      beneficiario de: Asistencia económica por orfandad por el COVID19?'
+    semantic_dictionary:
+      '0': Pase
+      '1': Asistencia económica por orfandad por el COVID19
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: TICUEST01
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de expansión anual proyecciones CPV-2007
+  - name: P710$08
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true
+  - name: P710$24
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true
+  - name: P710$25
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true
+  - name: P710$26
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true
+  - name: P710$27
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true

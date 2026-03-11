@@ -1,0 +1,890 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: summary
+  silver_name: enaho_summary_hhold_12g_calculated
+  grain: hhold
+  description: Ingreso y gasto bajo clasificación COICOP.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho_sumaria_12g_raw
+  raw_file_name: sumaria_2023_12g.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: MIEPERHO
+    type: INTEGER
+    description: Total de miembros del hogar
+  - name: TOTMIEHO
+    type: INTEGER
+    description: Total de personas en el hogar
+  - name: PERCEPHO
+    type: INTEGER
+    description: Total de perceptores de Ingresos
+  - name: TOTMIEHO
+    type: INTEGER
+    description: Total de personas en el hogar
+  - name: IA01HD
+    type: DOUBLE
+    description: Ingreso alquiler imputado de la vivienda
+  - name: IA02HD
+    type: INTEGER
+    description: Ingreso por transferencia de alquiler
+  - name: IG03HD1
+    type: INTEGER
+    description: Crédito, compra casa, departamento
+  - name: IG03HD2
+    type: INTEGER
+    description: Crédito, compra terreno para vivienda
+  - name: IG03HD3
+    type: INTEGER
+    description: Crédito, mejoramiento y/o ampliacion de la vivienda
+  - name: IG03HD4
+    type: INTEGER
+    description: Crédito, construccion de nueva vivienda
+  - name: SG23
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar adquiridos - transporte
+  - name: SIG24
+    type: DOUBLE
+    description: Ingresos y Gastos por alimentos para consumir en el hogar
+  - name: SG25
+    type: DOUBLE
+    description: Gastos por alimentos consumidos fuera del hogar (menores de 14 años)
+  - name: SIG26
+    type: DOUBLE
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar (menores
+      de 14 años)
+  - name: SG27
+    type: DOUBLE
+    description: Variable derivada inferida (Hermana de SG25)
+    metadata_inferred: true
+  - name: SIG28
+    type: DOUBLE
+    description: Variable derivada inferida (Hermana de SIG26)
+    metadata_inferred: true
+  - name: GA03HD
+    type: DOUBLE
+    description: Gasto por alquiler
+  - name: GA04HD
+    type: DOUBLE
+    description: Gasto por alquiler imputado
+  - name: SG42
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar comprados - equipos tv, computacion,
+      sonido
+  - name: SG421
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar comprados - electrodomésticos,
+      máquina de coser
+  - name: SG422
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar comprados - transporte
+  - name: SG42D
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar adquiridos - equipos tv, computacion,
+      sonido
+  - name: SG42D1
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar adquiridos - electrodomésticos,
+      máquina de coser
+  - name: SG42D2
+    type: DOUBLE
+    description: Gastos por equipamiento del hogar adquiridos - transporte
+  - name: INGBRUHD
+    type: DOUBLE
+    description: Ingreso bruto actividad principal monetaria (dependiente)
+  - name: INGNETHD
+    type: DOUBLE
+    description: Ingreso neto de la actividad principal monetario (dependiente)
+  - name: PAGESPHD
+    type: INTEGER
+    description: Ingreso por pago en especie de la actividad principal
+  - name: INGINDHD
+    type: DOUBLE
+    description: Ingreso por actividad principal independiente
+    metadata_inferred: true
+  - name: INGAUTHD
+    type: INTEGER
+    description: Ingreso por autoconsumo de la actividad principal independiente
+  - name: INSEDTHD
+    type: DOUBLE
+    description: Ingreso bruto de la actividad secundaria dependiente
+  - name: INSEDTHD1
+    type: INTEGER
+    description: Ingreso bruto de la actividad secundaria
+    required: false
+    data_missing: true
+  - name: INSEDLHD
+    type: DOUBLE
+    description: Ingreso neto de la actividad secundaria dependiente
+  - name: PAESECHD
+    type: INTEGER
+    description: Ingreso pago en especie de la actividad secundaria dependiente
+  - name: PAESECHD1
+    type: INTEGER
+    description: Ingreso pago en especie de la actividad secundaria
+    required: false
+    data_missing: true
+  - name: INGSEIHD
+    type: DOUBLE
+    description: Ingreso neto de la actividad secundaria independiente
+  - name: ISECAUHD
+    type: INTEGER
+    description: Ingreso por autoconsumo de la actividad secundaria independiente
+  - name: INGEXTHD
+    type: INTEGER
+    description: Ingresos extraordinarios por trabajo
+  - name: INGTRAHD
+    type: INTEGER
+    description: Ingreso por transferencias corrientes monetarias del pais
+  - name: INGTEXHD
+    type: INTEGER
+    description: Ingreso por transferencias corrientes del extranjero
+  - name: INGRENHD
+    type: INTEGER
+    description: Ingreso por rentas de la propiedad monetaria
+  - name: INGOEXHD
+    type: INTEGER
+    description: Otros Ingresos extraordinarios
+  - name: G05HD
+    type: DOUBLE
+    description: Gastos por alimentos consumidos fuera del hogar - pago
+  - name: IG06HD
+    type: DOUBLE
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar-no pago
+  - name: G05HD1
+    type: DOUBLE
+    description: Gastos por alimentos consumidos fuera del hogar en otro hogar- pago
+  - name: IG06HD1
+    type: DOUBLE
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar - otro
+      hogar-no pago
+  - name: G05HD2
+    type: DOUBLE
+    description: Gastos por alimentos consumidos fuera del hogar prepara sus alimentos
+      - pago
+  - name: IG06HD2
+    type: DOUBLE
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar - prepara
+      sus alimentos
+  - name: G05HD3
+    type: INTEGER
+    description: Gastos por alimentos consumidos fuera del hogar prepara sus alim
+      en su centro de trabajo
+  - name: IG06HD3
+    type: INTEGER
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar - prepara
+      sus alim en
+  - name: G05HD4
+    type: INTEGER
+    description: Gastos por alimentos consumidos fuera del hogar en el aula del centro
+      educativo
+  - name: IG06HD4
+    type: INTEGER
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar- aula
+      de su centro
+  - name: G05HD5
+    type: INTEGER
+    description: eGdausctoasti vpoor alimentos consumidos fuera del hogar a autoconsumo
+  - name: IG06HD5
+    type: DOUBLE
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar - autonsumo-no
+      pago
+  - name: G05HD6
+    type: INTEGER
+    description: Gastos por alimentos consumidos fuera del hogar campamento - pago
+  - name: IG06HD6
+    type: INTEGER
+    description: Ingresos y Gastos por alimentos consumidos fuera del hogar - campamento-no
+      pago
+  - name: G07HD1
+    type: DOUBLE
+    description: Otros Gastos transporte terrestre - pago
+  - name: G07HD2
+    type: DOUBLE
+    description: Otros Gastos - pago comunicaciones
+  - name: IG08HD1
+    type: DOUBLE
+    description: Ingresos y Gastos, Otros transporte terrestre - no pago
+  - name: IG08HD2
+    type: INTEGER
+    description: Ingresos y Gastos, Otros comunicaciones - no pago
+  - name: INGTPRHD
+    type: INTEGER
+    description: Ingreso por transferencias corrientes privada
+  - name: INGTPUHD
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas
+  - name: INGTPU01
+    type: INTEGER
+    description: 'Ingreso por transferencias corrientes públicas: Juntos'
+  - name: INGTPU02
+    type: INTEGER
+    description: 'Ingreso por transferencias corrientes públicas: Otros'
+  - name: INGTPU03
+    type: INTEGER
+    description: 'Ingreso por transferencias corrientes públicas: Pensión 65'
+  - name: INGTPU04
+    type: INTEGER
+    description: 'Ingreso por transferencias corrientes públicas: Beca 18'
+  - name: INGTPU05
+    type: INTEGER
+    description: 'Ingreso por transferencias corrientes públicas: Bono del gas'
+  - name: INGTPU10
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas Bono electricidad
+  - name: INGTPU11
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas Bono niño
+  - name: INGTPU12
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas Bono onp para jubilados
+  - name: INGTPU13
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas programa contigo
+  - name: INGTPU14
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas Bono Yanapay
+  - name: INGTPU15
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas Bono 600
+  - name: INGTPU16
+    type: INTEGER
+    description: Ingreso por transferencias corrientes públicas Bono alimentario
+  - name: GRU11HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos - gasto'
+  - name: GRU12HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos - autoconsumo, autosuministro'
+  - name: GRU13HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos dentro del hogar - pago en especie'
+  - name: GRU14HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos dentro del hogar - donacion pública'
+  - name: GRU15HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos dentro del hogar - donacion privada'
+  - name: GRU16HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos dentro del hogar - Otros Gastos'
+  - name: GRU10HD
+    type: DOUBLE
+    description: 'Grupo 1: Alimentos dentro del hogar - bien libre'
+  - name: GRU111HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - Gasto'
+  - name: GRU112HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - autoconsumo,
+      autosuministro'
+  - name: GRU113HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - pago
+      en especie'
+  - name: GRU114HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - donacion
+      pública'
+  - name: GRU115HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - donacion
+      privada'
+  - name: GRU116HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - Otros
+      Gastos'
+  - name: GRU110HD
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles, alimentos fuera del hogar - bien
+      extraido'
+  - name: GRU111HD2
+    type: DOUBLE
+    description: 'Grupo 11: Alimentos preparados en ambulante - Gasto'
+  - name: GRU112HD2
+    type: DOUBLE
+    description: 'Grupo 11: Alimentos preparados en ambulante - autoconsumo, autosuministro'
+  - name: GRU113HD2
+    type: DOUBLE
+    description: 'Grupo 11: Alimentos preparados en ambulante - pago en especie'
+  - name: GRU114HD2
+    type: DOUBLE
+    description: 'Grupo 11: Alimentos preparados en ambulante - donacion pública'
+  - name: GRU115HD2
+    type: DOUBLE
+    description: 'Grupo 11: Alimentos preparados en ambulante - donacion privada'
+  - name: GRU116HD2
+    type: DOUBLE
+    description: 'Grupo 11: Alimentos preparados en ambulante - Otros Gastos'
+  - name: GRU110HD2
+    type: INTEGER
+    description: 'Grupo 11: Alimentos preparados en ambulante - bien extraido'
+  - name: GRU21HD
+    type: DOUBLE
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - Gasto'
+  - name: GRU22HD
+    type: DOUBLE
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - autoconsumo, autosuministro'
+  - name: GRU23HD
+    type: DOUBLE
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - pago en especie'
+  - name: GRU24HD
+    type: INTEGER
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - donacion'
+  - name: GRU25HD
+    type: DOUBLE
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - donacion privada'
+  - name: GRU26HD
+    type: DOUBLE
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - Otros'
+  - name: GRU21HD1
+    type: DOUBLE
+    description: 'Grupo 2: Tabaco - Gasto'
+  - name: GRU22HD1
+    type: DOUBLE
+    description: 'Grupo 2: Tabaco - autoconsumo, autosuministro'
+  - name: GRU25HD1
+    type: DOUBLE
+    description: 'Grupo 2: Tabaco - donacion privada'
+  - name: GRU26HD1
+    type: DOUBLE
+    description: 'Grupo 2: Tabaco - Otros'
+  - name: GRU27HD1
+    type: INTEGER
+    description: 'Grupo 2: Tabaco - No Gasto'
+  - name: GRU20HD
+    type: DOUBLE
+    description: 'Grupo 2: Bebidas alcoholicas y estupefacientes - bien extraido'
+  - name: GRU31HD
+    type: DOUBLE
+    description: 'Grupo 3: Vestido y calzado - Gasto'
+  - name: GRU32HD
+    type: DOUBLE
+    description: 'Grupo 3: Vestido y calzado - autoconsumo, autosuministro'
+  - name: GRU33HD
+    type: DOUBLE
+    description: 'Grupo 3: Vestido y calzado - pago en especie'
+  - name: GRU34HD
+    type: DOUBLE
+    description: 'Grupo 3: Vestido y calzado - donacion pública'
+  - name: GRU35HD
+    type: DOUBLE
+    description: 'Grupo 3: Vestido y calzado - donacion privada'
+  - name: GRU36HD
+    type: DOUBLE
+    description: 'Grupo 3: Vestido y calzado - Otros'
+  - name: GRU37HD
+    type: INTEGER
+    description: 'Grupo 3: Vestido y calzado - no sabe'
+  - name: GRU41HD
+    type: DOUBLE
+    description: 'Grupo 4: Alojamiento , agua, electricidad, gas y otros combustibles
+      - Gasto'
+  - name: GRU42HD
+    type: DOUBLE
+    description: 'Grupo 4: alojamiento , agua , electricidad, gas y otros combustibles-
+      autoconsumo, autosuministro'
+  - name: GRU43HD
+    type: DOUBLE
+    description: 'Grupo 4: alojamiento , agua , electricidad, gas y otros combustibles
+      - pago en especie'
+  - name: GRU44HD
+    type: DOUBLE
+    description: 'Grupo 4: Alojamiento , agua, electricidad, gas y otros combustibles-
+      donacion pública'
+  - name: GRU45HD
+    type: DOUBLE
+    description: 'Grupo 4: Alojamiento , agua, electricidad, gas y otros combustibles-
+      donacion privada'
+  - name: GRU46HD
+    type: DOUBLE
+    description: 'Grupo 4: Alojamiento , agua, electricidad, gas y otros combustibles
+      - Otros'
+  - name: GRU47HD
+    type: DOUBLE
+    description: 'Grupo 4: Alojamiento , agua, electricidad, gas y otros combustibles
+      - no gasto,'
+  - name: GRU41HD1
+    type: DOUBLE
+    description: 'Grupo 4: Guardiania servicio comunal - Gasto'
+  - name: GRU45HD1
+    type: DOUBLE
+    description: 'Grupo 4: Guardiania servicio comunal - donacion privada'
+  - name: GRU46HD1
+    type: DOUBLE
+    description: 'Grupo 4: Guardiania servicio comunal - otro'
+  - name: GRU47HD1
+    type: DOUBLE
+    description: 'Grupo 4: Guardiania servicio comunal - no gasto, no sabe'
+  - name: GRU51HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - Gasto'
+  - name: GRU52HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - autoconsumo,
+      autosuministro'
+  - name: GRU53HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - pago
+      en especie'
+  - name: GRU54HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - donacion
+      pública'
+  - name: GRU54HD1
+    type: DOUBLE
+    description: Variable derivada inferida (Hermana de GRU54HD)
+    metadata_inferred: true
+  - name: GRU55HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - donacion
+      privada'
+  - name: GRU56HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - Otros'
+  - name: GRU57HD
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - no sabe
+      no Gasto'
+  - name: GRU51HD1
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - reparacion
+      electrodomésticos'
+  - name: GRU52HD1
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda-reparacion
+      electrodomésticos'
+  - name: GRU53HD1
+    type: INTEGER
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda-reparacion
+      electrodomésticos'
+  - name: GRU55HD1
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda -reparacion
+      electrodomésticos'
+  - name: GRU56HD1
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda -reparacion
+      electrodomésticos'
+  - name: GRU57HD1
+    type: DOUBLE
+    description: 'Grupo 5: Muebles, enseres y mantenimiento de la vivienda - reparacion
+      electrodomésticos'
+  - name: GRU61HD
+    type: DOUBLE
+    description: 'Grupo 6: Salud - Gasto'
+  - name: GRU62HD
+    type: DOUBLE
+    description: 'Grupo 6: Salud - autoconsumo, autosuministro'
+  - name: GRU64HD
+    type: DOUBLE
+    description: 'Grupo 6: Salud - donacion pública'
+  - name: GRU65HD
+    type: DOUBLE
+    description: 'Grupo 6: Salud - donacion privada'
+  - name: GRU66HD
+    type: INTEGER
+    description: 'Grupo 6: Salud - Otros'
+  - name: GRU67HD
+    type: DOUBLE
+    description: 'Grupo 6: Salud - no sabe'
+  - name: GRU60HD
+    type: INTEGER
+    description: 'Grupo 6: Salud - bien libre'
+  - name: GRU71HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - Gasto'
+  - name: GRU72HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - autoconsumo, autosuministro'
+  - name: GRU73HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - pago en especie'
+  - name: GRU74HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - donacion pública'
+  - name: GRU75HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - donacion privada'
+  - name: GRU76HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - Otros'
+  - name: GRU77HD
+    type: DOUBLE
+    description: 'Grupo 7: Transporte - no gasto, no sabe'
+  - name: GRU71HD1
+    type: DOUBLE
+    description: 'Grupo 7: Transporte -movilidad escolar- Gasto'
+  - name: GRU72HD1
+    type: INTEGER
+    description: 'Grupo 7: Transporte movilidad escolar- autoconsumo, autosuministro'
+  - name: GRU73HD1
+    type: INTEGER
+    description: 'Grupo 7: Transporte movilidad escolar- pago en especie'
+  - name: GRU74HD1
+    type: INTEGER
+    description: 'Grupo 7: Transporte movilidad escolar- donacion pública'
+  - name: GRU75HD1
+    type: INTEGER
+    description: 'Grupo 7: Transporte movilidad escolar- donacion privada'
+  - name: GRU76HD1
+    type: INTEGER
+    description: 'Grupo 7: Transporte movilidad escolar- Otros'
+  - name: GRU71HD2
+    type: DOUBLE
+    description: 'Grupo 7: Transporte parqueo - Gasto'
+  - name: GRU72HD2
+    type: INTEGER
+    description: 'Grupo 7: Transporte parqueo- autoconsumo, autosuministro'
+  - name: GRU75HD2
+    type: DOUBLE
+    description: 'Grupo 7: Transporte parqueo - donacion privada'
+  - name: GRU76HD2
+    type: INTEGER
+    description: 'Grupo 7: Transporte parqueo- Otros'
+  - name: GRU77HD2
+    type: INTEGER
+    description: 'Grupo 7: Transporte parqueo - no gasto, no sabe'
+  - name: GRU81HD
+    type: DOUBLE
+    description: 'Grupo 8: Comunicaciones - Gasto'
+  - name: GRU82HD
+    type: DOUBLE
+    description: 'Grupo 8: Comunicaciones - autoconsumo, autosuministro'
+  - name: GRU83HD
+    type: DOUBLE
+    description: 'Grupo 8: Comunicaciones - pago en especie'
+  - name: GRU84HD
+    type: INTEGER
+    description: 'Grupo 8: Comunicaciones - donacion pública'
+  - name: GRU85HD
+    type: DOUBLE
+    description: 'Grupo 8: Comunicaciones - donacion privada'
+  - name: GRU86HD
+    type: INTEGER
+    description: 'Grupo 8: Comunicaciones - Otros'
+  - name: GRU87HD
+    type: DOUBLE
+    description: 'Grupo 8: Comunicaciones - no gasto, no sabe'
+  - name: GRU91HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, Otros bienes y servicios - Gasto'
+  - name: GRU92HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, Otros bienes y servicios - autoconsumo,
+      autosuministro'
+  - name: GRU93HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, utiles de escritorio - pago en especie'
+  - name: GRU94HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, utiles de escritorio - donacion pública'
+  - name: GRU95HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, Otros bienes y servicios - donacion
+      privada'
+  - name: GRU96HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, Otros bienes y servicios - Otros'
+  - name: GRU97HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, Otros bienes y servicios - no gasto,
+      no sabe'
+  - name: GRU91HD1
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - Gasto'
+  - name: GRU92HD1
+    type: INTEGER
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - autoconsumo, autosuministro'
+  - name: GRU93HD1
+    type: INTEGER
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - pago en especie'
+  - name: GRU94HD1
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - donacion pública'
+  - name: GRU96HD1
+    type: INTEGER
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - Otros'
+  - name: GRU95HD1
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - donacion privada'
+  - name: GRU97HD1
+    type: INTEGER
+    description: 'Grupo 9: Recreacion y cultura, viaje turistico - no gasto, no sabe'
+  - name: GRU91HD3
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura - alimentos de mascotas- Gasto'
+  - name: GRU92HD3
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura - alimentos de mascotas -autoconsumo,
+      autosuministro'
+  - name: GRU93HD3
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura - alimentos de mascotas- pago en especie'
+  - name: GRU94HD3
+    type: INTEGER
+    description: 'Grupo 9: Recreacion y cultura - alimentos de mascotas- donacion
+      pública'
+  - name: GRU95HD3
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura - alimentos de mascotas- donacion
+      privada'
+  - name: GRU96HD3
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura - alimentos de mascotas- Otros'
+  - name: GRU90HD
+    type: DOUBLE
+    description: 'Grupo 9: Recreacion y cultura - no gasto, bien libre'
+  - name: GRU101HD
+    type: DOUBLE
+    description: 'Grupo 10: Educacion - Gasto'
+  - name: GRU102HD
+    type: INTEGER
+    description: 'Grupo 10: Educacion - autoconsumo'
+  - name: GRU103HD
+    type: INTEGER
+    description: 'Grupo 10: Educacion - pago en especie'
+  - name: GRU104HD
+    type: DOUBLE
+    description: 'Grupo 10: Educacion - donacion pública'
+  - name: GRU105HD
+    type: DOUBLE
+    description: 'Grupo 10: Educacion - donacion privada'
+  - name: GRU106HD
+    type: INTEGER
+    description: 'Grupo 10: Educacion - Otros'
+  - name: GRU111HD1
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles - Gasto'
+  - name: GRU112HD1
+    type: INTEGER
+    description: 'Grupo 11: Restaurantes y hoteles - autoconsumo'
+  - name: GRU115HD1
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles - donacion privada'
+  - name: GRU116HD1
+    type: DOUBLE
+    description: 'Grupo 11: Restaurantes y hoteles - Otros'
+  - name: GRU117HD1
+    type: INTEGER
+    description: 'Grupo 11: Restaurantes y hoteles - no sabe, no Gasto'
+  - name: GRU121HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - Gasto'
+  - name: GRU122HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - autoconsumo,
+      autosuministro'
+  - name: GRU123HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - pago en
+      especie'
+  - name: GRU124HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - donacion
+      pública'
+  - name: GRU125HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - donacion
+      privada'
+  - name: GRU126HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - Otros'
+  - name: GRU127HD
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, cuidado personal - no gasto,
+      no sabe'
+  - name: GRU121HD3
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fotocopias, cuotas extraordinarias
+      - gasto'
+  - name: GRU122HD3
+    type: INTEGER
+    description: 'Grupo 12: Bienes y servicios diversos, fotocopias, cuotas extraordinarias
+      - autoconsumo'
+  - name: GRU123HD3
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fotocopias, cuotas extraordinarias
+      - pago'
+  - name: GRU124HD3
+    type: INTEGER
+    description: 'Grupo 12: Bienes y servicios diversos, fotocopias, cuotas extraordinarias
+      - donacion pública'
+  - name: GRU125HD3
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fotocopias, cuotas extraordinarias
+      - donacion privada'
+  - name: GRU126HD3
+    type: INTEGER
+    description: 'Grupo 12: Bienes y servicios diversos, fotocopias, cuotas extraordinarias
+      - otro'
+  - name: GRU121HD2
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, seguro - Gasto'
+  - name: GRU121HD4
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fiestas - Gasto'
+  - name: GRU122HD4
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fiestas - autoconsumo, autosuministro'
+  - name: GRU125HD4
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fiestas - donado privada'
+  - name: GRU126HD4
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fiestas - Otros'
+  - name: GRU127HD4
+    type: DOUBLE
+    description: 'Grupo 12: Bienes y servicios diversos, fiestas - no gasto, no sabe'
+  - name: GASHOG2D
+    type: DOUBLE
+    description: Ingreso bruto
+  - name: GASHOG1D
+    type: DOUBLE
+    description: Ingreso neto
+  - name: INGMO1HD
+    type: DOUBLE
+    description: Ingreso monetario (bruto)
+  - name: INGMO2HD
+    type: DOUBLE
+    description: Ingreso monetario (neto)
+  - name: INGHOG1D
+    type: DOUBLE
+    description: Ingreso bruto Total
+  - name: INGHOG2D
+    type: DOUBLE
+    description: Ingreso neto Total
+  - name: ESTRSOCIAL
+    type: INTEGER
+    description: Estrato Socio-Económico
+    semantic_dictionary:
+      '1': A
+      '2': B
+      '3': C
+      '4': D
+      '5': E 6 Rural  – 6
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: LD
+    type: DOUBLE
+    description: Deflactor espacial
+  - name: LINPE
+    type: DOUBLE
+    description: Linea de Pobreza alimentaria
+  - name: LINEA
+    type: DOUBLE
+    description: Linea de Pobreza total
+  - name: POBREZA
+    type: INTEGER
+    description: Pobreza
+    semantic_dictionary:
+      '1': Pobre Extremo
+      '2': Pobre No Extremo
+      '3': No Pobre  – 3
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: LINEAV
+    type: DOUBLE
+    description: Linea corriente de vulnerabilidad
+  - name: POBREZAV
+    type: INTEGER
+    description: Pobreza y vulnerabilidad
+    semantic_dictionary:
+      '1': Pobre Extremo
+      '2': Pobre No Extremo
+      '3': Vulnerable No pobre
+      '4': No Vulnerable  – 4
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de Expansión Anual Proyecciones CPV-2007

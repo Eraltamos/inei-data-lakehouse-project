@@ -1,0 +1,192 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: microenterprise
+  silver_name: enaho_microenterprise_item_sales
+  grain: item
+  description: Transacciones de ventas.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho04_p14-22_raw
+  raw_file_name: Enaho04-2023-2-Preg-14-a-22.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: ACTIVIDA
+    type: INTEGER
+    description: Condición de la actividad laboral (Principal/Secundaria)
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    semantic_dictionary:
+      1: Actividad Principal
+      2: Actividad Secundaria
+  - name: AÑO
+    type: VARCHAR
+    description: Actividad de la persona
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número Secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la Persona
+  - name: UBIGEO
+    type: VARCHAR
+    description: Código de Ubicación Geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de Informante
+  - name: PERIODO
+    type: INTEGER
+    description: Período de ejecución de la Encuesta
+    semantic_dictionary:
+      '1': Primer Período
+      '2': Segundo Período
+      '3': Tercer Período
+      '4': Cuarto Período
+      '5': Quinto Período
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: MODULO
+    type: INTEGER
+    description: Módulo de Producción, Comercio o Servicio
+    semantic_dictionary:
+      '14': 'Producción de Bienes: Ventas'
+      '15': 'Producción de Bienes: Autoconsumo'
+      '16': 'Producción de Bienes: Gasto en Materia Prima e Insumos'
+      '17': 'Comercio: Ventas'
+      '18': 'Comercio: Autosuministro'
+      '19': 'Comercio: Compra de Mercaderías'
+      '20': 'Servicios: Ingresos Totales'
+      '21': 'Servicios: Autosuministro'
+      '22': 'Servicios: Gastos Rango : 14-22'
+    constraints:
+    - allowed_values:
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+      - 20
+      - 21
+      - 22
+  - name: ORDEN
+    type: INTEGER
+    description: Número de orden del producto
+  - name: PRODUCTO
+    type: VARCHAR
+    description: Nombre del producto
+    semantic_dictionary:
+      '1': Diario
+      '2': Semanal
+      '3': Quincenal
+      '4': Mensual    –4
+    sentinel_nulls:
+    - '99'
+    constraints:
+    - allowed_values:
+      - '1'
+      - '2'
+      - '3'
+      - '4'
+  - name: PRECIO
+    type: INTEGER
+    description: Precio del producto
+  - name: MONTOTOT
+    type: INTEGER
+    description: Monto Total
+  - name: TICUEST01B
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    required: false
+    data_missing: true
+  - name: FACTORA07
+    type: DOUBLE
+    description: Factor de Expansión anual de Empleo/Ingresos ajustados por grupos
+      de edad. Proyecciones CPV-2007
+  - name: FRECUEN
+    type: VARCHAR
+    description: Columna detectada en el CSV de origen sin documentación oficial en
+      el diccionario.
+    required: false
+    metadata_missing: true

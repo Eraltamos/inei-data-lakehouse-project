@@ -1,0 +1,574 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: microenterprise
+  silver_name: enaho_microenterprise_biz_chars
+  grain: biz
+  description: Características del negocio independiente.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho04_p1-13_raw
+  raw_file_name: Enaho04-2023-1-Preg-1-a-13.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: ACTIVIDA
+    type: INTEGER
+    description: Condición de la actividad laboral (Principal/Secundaria)
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    semantic_dictionary:
+      1: Actividad Principal
+      2: Actividad Secundaria
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la Persona
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de Informante
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: PERIODO
+    type: INTEGER
+    description: Periodo de Ejecución de la Encuesta
+    semantic_dictionary:
+      '1': Primer Período
+      '2': Segundo Período
+      '3': Tercer Período
+      '4': Cuarto Período
+      '5': 'Quinto Período Archivo : ENAHO04-2023-1-Preg-1-a-13  –5'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: E1
+    type: INTEGER
+    description: '¿El negocio o establecimiento que ud. dirige se encuentra registrado
+      como:'
+    semantic_dictionary:
+      '1': Persona Natural (con RUC, RUS, RER, u otro régimen)
+      '2': Persona Jurídica (Sociedad Anónima; SRL; Sociedad Civil; EIRL; Fundación
+        ó Asociación, etc)
+      '3': No está registrado (no tiene RUC)    –3
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: E1A1
+    type: INTEGER
+    description: ¿Cuál es la razón principal por la que no se ha registrado?
+    semantic_dictionary:
+      '1': Los trámites son muy complicados
+      '2': No sabe si debe registrarse
+      '3': No sabe dónde o cómo registrarse
+      '4': No podría asumir la carga de impuestos si se registra
+      '5': Le quita demasiado tiempo
+      '6': Su negocio es pequeño/produce poca cantidad
+      '7': Es un trabajo eventual
+      '9': Otro  –9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 9
+  - name: E1B
+    type: INTEGER
+    description: '¿Ud. lleva las cuentas de su Negocio o actividad:'
+    semantic_dictionary:
+      '1': Por medios de libros o Sistema de Contabilidad completa
+      '2': Por medio de libros de Ingresos y Gastos exigidos por la SUNAT
+      '3': Por medio de apuntes, registros o anotaciones personales
+      '4': No lleva cuentas    –4
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: E2
+    type: INTEGER
+    description: 'Ud. desempeñó su negocio o actividad:'
+    semantic_dictionary:
+      '1': Como ambulante
+      '2': En el domicilio de los clientes
+      '3': En vehículo para transporte de personas o mercaderías
+      '4': En puesto improvisado en la vía pública
+      '5': En puesto improvisado en mercado público
+      '6': En puesto fijo en la vía pública
+      '7': En local fijo en mercado público (tienda, stand)
+      '8': En taller, tienda, restaurante, hotel, oficina, consultorio, etc.
+      '9': En su taller comercial dentro de su vivienda y en una habitación de uso
+        exclusivo
+      '10': Dentro de las habitaciones de su vivienda
+      '11': 'Otro    –11 Archivo : ENAHO04-2023-1-Preg-1-a-13'
+    sentinel_nulls:
+    - 99
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+  - name: E3
+    type: INTEGER
+    description: '¿Ud. realiza su negocio o actividad en un local:'
+    semantic_dictionary:
+      '1': ¿Propio? (propietario)
+      '2': ¿Alquilado?
+      '3': ¿Prestado?
+      '4': ¿Otro?  –4
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: E4A1
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Agua potable?'
+    semantic_dictionary:
+      '1': Si
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E4B1
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Agua potable - Es de Uso:'
+    semantic_dictionary:
+      '1': Exclusivo
+      '2': Hogar
+      '3': Otro establecimiento  –3
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: E4A2
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Desagüe?'
+    semantic_dictionary:
+      '1': Si
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E4B2
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Desagüe - Es de Uso:'
+    semantic_dictionary:
+      '1': Exclusivo
+      '2': Hogar
+      '3': Otro establecimiento  –3
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: E4A3
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Electricidad?'
+    semantic_dictionary:
+      '1': Si
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E4B3
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Electricidad - Es de Uso:'
+    semantic_dictionary:
+      '1': Exclusivo
+      '2': Hogar
+      '3': Otro establecimiento  –3
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: E4A4
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Teléfono?'
+    semantic_dictionary:
+      '1': Si
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E4B4
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Teléfono - Es de Uso: Archivo
+      : ENAHO04-2023-1-Preg-1-a-13'
+    semantic_dictionary:
+      '1': Exclusivo
+      '2': Hogar
+      '3': Otro establecimiento  –3
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: E4A5
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Internet?'
+    semantic_dictionary:
+      '1': Si
+      '2': No    –2
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E4B5
+    type: INTEGER
+    description: '¿Su local o establecimiento cuenta con: Internet - Es de Uso:'
+    semantic_dictionary:
+      '1': Exclusivo
+      '2': Hogar
+      '3': Otro establecimiento  –3
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: E5
+    type: INTEGER
+    description: ¿Cuál es el motivo por el cual inició este negocio o actividad?
+    semantic_dictionary:
+      '1': No encontró trabajo asalariado
+      '2': Obtiene ingresos / mayores ingresos
+      '3': Quiere ser independiente
+      '4': Por tradición familiar
+      '5': Por necesidad económica
+      '6': Otro    –6
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+  - name: E6A
+    type: INTEGER
+    description: ¿Cuánto tiempo trabaja Ud. en su negocio o establecimiento? - Años
+    sentinel_nulls:
+    - 99
+  - name: E6B
+    type: INTEGER
+    description: ¿Cuánto tiempo trabaja Ud. en su negocio o establecimiento? - Meses
+    sentinel_nulls:
+    - 99
+  - name: E8A
+    type: INTEGER
+    description: ¿Cuántas personas (incluyéndolo a ud.) trabajan en este negocio?
+      - Total
+    sentinel_nulls:
+    - 99
+  - name: E8B
+    type: INTEGER
+    description: ¿Cuántas personas (incluyéndolo a ud.) trabajan en este negocio?
+      - Trabajadores Remunerados (asalariados)
+    sentinel_nulls:
+    - 99
+  - name: E8C
+    type: INTEGER
+    description: ¿Cuántas personas (incluyéndolo a ud.) trabajan en este negocio?
+      - Trabajadores Familiares No Remunerados del Hogar y/o otro Hogar + Dueño del
+      negocio
+    sentinel_nulls:
+    - 99
+  - name: E9A
+    type: INTEGER
+    description: Durante los últimos 12 meses, de ... a ..., ¿Cuántos meses funcionó
+      su negocio?
+  - name: E9A1
+    type: INTEGER
+    description: Durante los últimos 12 meses, de ... a ..., ¿Cuántos meses funcionó
+      su negocio? - Recien inició su negocio
+    semantic_dictionary:
+      '0': Pase
+      '1': Recién inició su negocio
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+  - name: E13A
+    type: INTEGER
+    description: 'La semana pasada, ¿Qué tipo de actividad realizó en su negocio o
+      establecimiento? - Producción/extracción(pesca, minas, etc.) de algún bien Archivo
+      : ENAHO04-2023-1-Preg-1-a-13'
+    semantic_dictionary:
+      '0': Pase  Missing value
+    constraints:
+    - allowed_values:
+      - 0
+  - name: E13B
+    type: INTEGER
+    description: La semana pasada, ¿Qué tipo de actividad realizó en su negocio o
+      establecimiento? - Compra y Venta de mercaderías
+    semantic_dictionary:
+      '0': Pase
+      '2': Compra y venta de mercaderias  ,2
+    constraints:
+    - allowed_values:
+      - 0
+      - 2
+  - name: E13C
+    type: INTEGER
+    description: La semana pasada, ¿Qué tipo de actividad realizó en su negocio o
+      establecimiento? - Prestación de Servicios
+    semantic_dictionary:
+      '0': Pase
+      '3': Prestación de servicios  ,3
+    constraints:
+    - allowed_values:
+      - 0
+      - 3
+  - name: E14T
+    type: INTEGER
+    description: En el mes anterior, de lo que Ud. produce/extrae ¿A cuánto ascendieron
+      sus ventas totales? - Venta Total Mensual (S/.)
+    sentinel_nulls:
+    - 999999
+  - name: E15
+    type: INTEGER
+    description: En el mes anterior, de lo que Ud. produce/extrae, ¿Consumieron en
+      el hogar?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E15GG
+    type: INTEGER
+    description: En el mes anterior, de lo que Ud. produce/extrae, ¿Consumieron en
+      el hogar? - Autoconsumo Total Mensual (S/.)
+  - name: E16T
+    type: INTEGER
+    description: En el mes anterior, para los bienes producidos que Ud. vendió y destinó
+      al consumo de su hogar, ¿Cuánto fuel el gasto realizado en materia prima e insumos?
+      - Gasto Total Mensual (S/.)
+    sentinel_nulls:
+    - 999999
+  - name: E17T
+    type: INTEGER
+    description: En el mes anterior, de la actividad comercial que Ud. realiza ¿A
+      cuánto ascendieron sus ventas totales? - Venta Total Mensual (S/.)
+    sentinel_nulls:
+    - 999999
+  - name: E18
+    type: INTEGER
+    description: En el mes anterior, de los productos que Ud. vende, ¿Consumieron
+      en el hogar?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E18GG
+    type: INTEGER
+    description: En el mes anterior, de los productos que Ud. vende, ¿Consumieron
+      en el hogar? - Autosuministro Total Mensual (S/.)
+  - name: E19T
+    type: INTEGER
+    description: Para los productos comerciales que Ud. vendió y destinó al consumo
+      de su hogar ¿Cuánto fue el gasto total en la compra de artículos o mercaderías?
+      Gasto Total Mensual (S/.)
+    sentinel_nulls:
+    - 999999
+  - name: E20T
+    type: INTEGER
+    description: En el mes anterior, de los servicios prestados, ¿A cuánto ascendieron
+      sus ingresos totales? - Ingreso Total Mensual (S/.)
+    sentinel_nulls:
+    - 999999
+  - name: E21
+    type: INTEGER
+    description: 'En el mes anterior, de los servicios prestados, ¿Hicieron uso de
+      estos servicios en el hogar? Archivo : ENAHO04-2023-1-Preg-1-a-13'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E21GG
+    type: INTEGER
+    description: En el mes anterior, de los servicios prestados, ¿Hicieron uso de
+      estos servicios en el hogar? - Autosuministro Total Mensual (S/.)
+  - name: E22T
+    type: INTEGER
+    description: De los servicios prestados, ¿Cuánto fue su gasto total? - Gasto Total
+      Mensual (S/.)
+  - name: E23ST
+    type: INTEGER
+    description: 'Otros gastos en el mes anterior: Sub Total Gasto Mensual - Monto
+      Mensual (S/.)'
+  - name: E23T
+    type: INTEGER
+    description: 'Otros gastos en el mes anterior: Total Gasto Mensual - Monto Mensual
+      (S/.)'
+  - name: E24T
+    type: INTEGER
+    description: Características de la mano e obra y el empleo - Costo Total Mensual
+      en Mano de Obra (S/.)
+  - name: E25ST1
+    type: INTEGER
+    description: 'Hoja de Control: Sub Total A'
+  - name: E25ST2
+    type: INTEGER
+    description: 'Hoja de Control: Sub Total B'
+  - name: E25ST3
+    type: INTEGER
+    description: 'Hoja de Control: Sub Total C'
+  - name: E25ST4
+    type: INTEGER
+    description: 'Hoja de Control: Sub Total'
+  - name: E25T1
+    type: INTEGER
+    description: Gastos en Mano de Obra (M.O) (-)
+  - name: E25T2
+    type: INTEGER
+    description: Total Gasto Mensual Cap. 50 (-)
+  - name: E25T3
+    type: INTEGER
+    description: Total Ganancia neta
+  - name: TICUEST01B
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    required: false
+    data_missing: true
+  - name: TICUEST04
+    type: INTEGER
+    description: Origen de cuestionario
+  - name: FACTORA07
+    type: DOUBLE
+    description: Factor de Expansión anual de Empleo/Ingresos ajustados por grupos
+      de edad. Proyecciones CPV-2007

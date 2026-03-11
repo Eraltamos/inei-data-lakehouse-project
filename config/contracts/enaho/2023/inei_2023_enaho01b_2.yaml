@@ -1,0 +1,1008 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: demog
+  silver_name: enaho_demog_hhold_perception
+  grain: hhold
+  description: Percepción de bienestar familiar.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho01b_2_raw
+  raw_file_name: Enaho01B-2023-2.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: AÑO
+    type: VARCHAR
+    description: Año de la Encuesta
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la persona
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de informante
+  - name: UBIGEO
+    type: VARCHAR
+    description: Ubicación geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  En los últimos 12 meses, ¿A
+        Ud. y/o a algún miembro de su hogar le solicitaron, se
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P23
+    type: INTEGER
+    description: sintió obligado o dio voluntariamente regalos, propinas, sobornos,
+      coimas a un funcionario del estado?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+      '3': No hizo uso de los servicios del estado 9 Missing
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P24_1
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por : Pensión de Alimentos?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_2
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por : Tenencia de Menor (patria potestad)?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_3
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por : Régimen de Visitas?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_4
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por : Desalojo?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_5
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por : Indemnización?'
+    semantic_dictionary:
+      '1': Si
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P24_6
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por : División y Partición de Bienes?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_7
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por: Violencia Familiar?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_8
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por: Robo, hurto?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_9
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por: Violación sexual?'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_10
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por: Otro? (especifique)'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P24_11
+    type: INTEGER
+    description: 'En los últimos 12 meses, Ud. y/o algún miembro de su hogar, ¿ha
+      tenido algún desacuerdo o conflicto por: Otro? (especifique)'
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P25
+    type: INTEGER
+    description: ¿Cuál fue el conflicto o desacuerdo de mayor gravedad?
+    semantic_dictionary:
+      '1': Pensión de Alimentos
+      '2': Tenencia de Menor (patria potestad)
+      '3': Régimen de Visitas
+      '4': Desalojo
+      '5': Indemnización
+      '6': División y Partición de Bienes
+      '7': Violencia Familiar
+      '8': Robo, hurto
+      '9': Violación sexual
+      '10': Otro
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+  - name: P26_1
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Conciliación o arbitraje?'
+    sentinel_nulls:
+    - 0
+  - name: P26_2
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Líder de la comunidad?'
+    sentinel_nulls:
+    - 0
+  - name: P26_3
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Defensoría del Pueblo?'
+    sentinel_nulls:
+    - 0
+  - name: P26_4
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Municipalidad de
+      su distrito?'
+    sentinel_nulls:
+    - 0
+  - name: P26_5
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Subprefecto / Tnte.Gobernador?'
+    sentinel_nulls:
+    - 0
+  - name: P26_6
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: Otro (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P26_7
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Poder Judicial /
+      Juez de paz?'
+    sentinel_nulls:
+    - 0
+  - name: P26_8
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Ministerio Público?'
+    sentinel_nulls:
+    - 0
+  - name: P26_9
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Policía Nacional?'
+    sentinel_nulls:
+    - 0
+  - name: P26_10
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Defensa Pública
+      (MINJUS)?'
+    sentinel_nulls:
+    - 0
+  - name: P26_11
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: ¿Justicia indígena?'
+    sentinel_nulls:
+    - 0
+  - name: P26_12
+    type: INTEGER
+    description: '¿Por este desacuerdo o conflicto acudió Ud. a: Otra Autoridad de
+      Justicia (especifique)'
+    sentinel_nulls:
+    - 0
+  - name: P26_13
+    type: INTEGER
+    description: No acudió a ninguno
+    sentinel_nulls:
+    - 0
+  - name: P27_1
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - Se encuentra lejos
+    sentinel_nulls:
+    - 0
+  - name: P27_2
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - Por maltrato del
+      personal administrativo y/o autoridad de justicia
+    sentinel_nulls:
+    - 0
+  - name: P27_3
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - Falta de tiempo
+    sentinel_nulls:
+    - 0
+  - name: P27_4
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - No tenía pruebas
+    sentinel_nulls:
+    - 0
+  - name: P27_5
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - Hay corrupción
+    semantic_dictionary:
+      '1': Hay corrupción
+    constraints:
+    - allowed_values:
+      - 1
+  - name: P27_6
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - Elevado costo económico
+    sentinel_nulls:
+    - 0
+  - name: P27_7
+    type: INTEGER
+    description: ¿Por qué no acudió a la autoridad de justicia? - Otro (especifique)
+    sentinel_nulls:
+    - 0
+  - name: P28
+    type: INTEGER
+    description: '¿El proceso:'
+    semantic_dictionary:
+      '1': Concluyó con decisión favorable
+      '2': Concluyó con decisión desfavorable
+      '3': Se encuentra en primera instancia
+      '4': En la primera decisión judicial ha sido apelada
+      '5': En la segunda decisión judicial ha sido impugnada
+      '6': Fue abandonado
+      '7': Otro
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+  - name: P29_1
+    type: INTEGER
+    description: '¿El grado de satisfacción respecto a: - La atención oportuna que
+      le dieron las autoridades de justicia fue:'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P29_2
+    type: INTEGER
+    description: '¿El grado de satisfacción respecto a: - La solución de su caso que
+      le dieron las autoridades de justicia fue:'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P29_3
+    type: INTEGER
+    description: '¿El grado de satisfacción respecto a: - La orientación en el trámite
+      que le dieron las autoridades de justicia fue:'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P29_4
+    type: INTEGER
+    description: '¿El grado de satisfacción respecto a: - El trato del personal administrativo
+      de las autoridades de justicia fue:'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P29_5
+    type: INTEGER
+    description: '¿El grado de satisfacción respecto a: - El trato del Juez, Fiscal,
+      Policía u otra autoridad'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P29_6
+    type: INTEGER
+    description: '¿El grado de satisfacción respecto a: - La Información sobre el
+      estado del proceso'
+    semantic_dictionary:
+      '1': Nada
+      '2': Poco
+      '3': Suficiente
+      '4': Bastante
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P32
+    type: INTEGER
+    description: '¿En la actual situación económica de su hogar:'
+    semantic_dictionary:
+      '1': Logra ahorrar dinero
+      '2': Apenas logra equilibrar sus ingresos y gastos
+      '3': Se ve obligado a gastas sus ahorros
+      '4': Se ve obligado a endeudarse
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P33_1
+    type: INTEGER
+    description: '¿En el último año, ¿El nivel vida : De los hogares de su localidad
+      o comunidad...'
+    semantic_dictionary:
+      '1': Mejoró
+      '2': Esta igual
+      '3': Empeoró
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P33_2
+    type: INTEGER
+    description: '¿En el último año, ¿El nivel vida : De su hogar...'
+    semantic_dictionary:
+      '1': Mejoró
+      '2': Esta igual
+      '3': Empeoró
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P34
+    type: INTEGER
+    description: ¿Por qué mejoró el nivel de vida de su hogar?
+    semantic_dictionary:
+      '1': Encontró empleo estando sin trabajo
+      '2': Encontró mejor trabajo
+      '3': Trabajan más miembros del hogar
+      '4': Instaló un negocio
+      '5': Donaciones / Transferencias / Rentas
+      '6': Aumentó ingresos por trabajo independiente
+      '7': Aumentó ingresos por trabajo dependiente
+      '8': Otro
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: P34A
+    type: INTEGER
+    description: 'El grado de satisfacción de su hogar, respecto a los bienes y/o
+      servicios recibidos del(os) Programa(s) ..., ha sido:'
+    semantic_dictionary:
+      '1': Bastante
+      '2': Suficiente
+      '3': Poco
+      '4': Nada
+    sentinel_nulls:
+    - 9
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P34B
+    type: INTEGER
+    description: 'El(os) Programa(s) ... ha(n) contribuido a mejorar la calidad de
+      vida de su hogar:'
+    semantic_dictionary:
+      '1': Bastante
+      '2': Suficiente
+      '3': Poco
+      '4': Nada
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P34C
+    type: INTEGER
+    description: 'El grado de satisfacción de su hogar, respecto a los alimentos recibidos
+      del(os) Programa(s) ..., ha sido:'
+    semantic_dictionary:
+      '1': Bastante
+      '2': Suficiente
+      '3': Poco
+      '4': Nada
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P34D
+    type: INTEGER
+    description: 'El(os) programa(s) social(es) alimentario(s) ...... ha(n) contribuido
+      al bienestar de su hogar:'
+    semantic_dictionary:
+      '1': Bastante
+      '2': Suficiente
+      '3': Poco
+      '4': Nada
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P37
+    type: INTEGER
+    description: 'Con los ingresos de su hogar ¿Estima usted que viven:'
+    semantic_dictionary:
+      '1': Muy mal
+      '2': Mal
+      '3': Bien
+      '4': Muy bien
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P38
+    type: INTEGER
+    description: ¿En cuanto estima Ud. el monto mínimo mensual necesario que requiere
+      su hogar para vivir
+    sentinel_nulls:
+    - 99999
+  - name: P38A
+    type: INTEGER
+    description: '¿Los ingresos de su hogar son:'
+    semantic_dictionary:
+      '1': Muy inestable
+      '2': Más o menos estables
+      '3': Estables
+    sentinel_nulls:
+    - 9
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P39B1
+    type: INTEGER
+    description: Si la condición económica de su hogar es medida en una escala del
+      1 al 10 ¿En que escalón considera se encuentra la condición económica de su
+      hogar?
+  - name: P39B2
+    type: INTEGER
+    description: Si la condición económica de su hogar es medida en una escala del
+      1 al 10 ¿En que escalón considera se encuentra la condición económica de su
+      hogar? - No sabe / No responde   / No responde
+    sentinel_nulls:
+    - 1
+  - name: P40$1
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Pérdida de empleo de algún miembro del hogar?'
+    sentinel_nulls:
+    - 0
+  - name: P40$2
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Quiebra del negocio familiar?'
+    sentinel_nulls:
+    - 0
+  - name: P40$3
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Enfermedad o accidente grave de algún miembro del
+      hogar?'
+    sentinel_nulls:
+    - 0
+  - name: P40$4
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Abandono del jefe del hogar?'
+    sentinel_nulls:
+    - 0
+  - name: P40$5
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Hecho delictivo (robo, asalto, etc.)?'
+    sentinel_nulls:
+    - 0
+  - name: P40$6
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Desastres naturales (sequia, tormenta, plaga, inundación,
+      etc.)?'
+    sentinel_nulls:
+    - 0
+  - name: P40$7
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Otro?'
+    sentinel_nulls:
+    - 0
+  - name: P40$8
+    type: INTEGER
+    description: 'En los últimos 12 meses de...a...¿Su hogar se vio afectado por alguno
+      de los siguientes problemas: Ninguno'
+    sentinel_nulls:
+    - 0
+  - name: P41
+    type: INTEGER
+    description: '¿Este(os) problema(s) ha(n) significado para el hogar:'
+    semantic_dictionary:
+      '1': Disminución de ingresos
+      '2': Pérdida de bienes/patrimonio
+      '3': Ambos
+      '4': Ninguno
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P42A$1
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Gastaron sus ahorros o capital
+    sentinel_nulls:
+    - 0
+  - name: P42A$2
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Empeñaron o vendieron bienes(joyas, muebles, maquinarias, etc.)
+    sentinel_nulls:
+    - 0
+  - name: P42A$3
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Obtuvieron préstamos
+    sentinel_nulls:
+    - 0
+  - name: P42A$4
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Consiguieron otros trabajos
+    sentinel_nulls:
+    - 0
+  - name: P42A$5
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Recibieron ayuda del gobierno
+    sentinel_nulls:
+    - 0
+  - name: P42A$6
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Disminuyeron alimentación, consumo
+    sentinel_nulls:
+    - 0
+  - name: P42A$7
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      Otro
+    sentinel_nulls:
+    - 0
+  - name: P42A$8
+    type: INTEGER
+    description: ¿Qué hicieron para solucionar esta disminución o pérdida de ingresos/bienes/patrimonios?
+      No hicieron nada
+    sentinel_nulls:
+    - 0
+  - name: P42A$9
+    type: INTEGER
+    description: Recibió apoyo de familiares
+    semantic_dictionary:
+      '3': Si, parcialmente Rango 0-1
+    constraints:
+    - allowed_values:
+      - 3
+  - name: P43
+    type: INTEGER
+    description: ¿La disminución o pérdida de ingresos/ bienes/ patrimonio, se solucionó
+      totalmente?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+      '3': Si, parcialmente
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+  - name: P44
+    type: INTEGER
+    description: ¿En cuánto tiempo cree que se solucionará?
+    semantic_dictionary:
+      '1': Antes de 6 meses
+      '2': Entre 6 y 12 meses
+      '3': Más de un año
+      '4': No tiene solución
+    sentinel_nulls:
+    - 5
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+  - name: P45_1
+    type: INTEGER
+    description: ¿Cual fué el Nivel de Estudios alcanzado por sus padres? - Padre
+    semantic_dictionary:
+      '1': Sin Nivel
+      '2': Primaria Incompleta
+      '3': Primaria Completa
+      '4': Secundaria Incompleta
+      '5': Secundaria Completa
+      '6': Superior No Universitaria Incompleta
+      '7': Superior No Universitaria Completa
+      '8': Superior Universitaria Incompleta
+      '9': Superior Universitaria Completa
+    sentinel_nulls:
+    - 99
+    - 10
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+  - name: P45_2
+    type: INTEGER
+    description: ¿Cual fué el Nivel de Estudios alcanzado por sus padres? - Madre
+    semantic_dictionary:
+      '1': Sin Nivel
+      '2': Primaria Incompleta
+      '3': Primaria Completa
+      '4': Secundaria Incompleta
+      '5': Secundaria Completa
+      '6': Superior No Universitaria Incompleta
+      '7': Superior No Universitaria Completa
+      '8': Superior Universitaria Incompleta
+      '9': Superior Universitaria Completa
+    sentinel_nulls:
+    - 99
+    - 10
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+  - name: P203_02
+    type: INTEGER
+    description: ¿Cuál es la relación de parentesco con el jefe(a) del hogar?
+    semantic_dictionary:
+      '0': Panel
+      '1': Jefe/Jefa
+      '2': Esposo(a)/compañero(a)
+      '3': Hijo(a)/Hijastro(a)
+      '4': Yerno/Nuera
+      '5': Nieto(a)
+      '6': Padres/Suegros
+      '7': Otros parientes
+      '8': Trabajador Hogar
+      '9': Pensionista
+      '10': Otros no parientes
+      '11': Hermano(a)
+    constraints:
+    - allowed_values:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+  - name: P204_02
+    type: INTEGER
+    description: ¿Es miembro del hogar?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P205_02
+    type: INTEGER
+    description: ¿Se encuentra ausente del hogar 30 días o más?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P206_02
+    type: INTEGER
+    description: ¿Está presente en el hogar 30 días o más?
+    semantic_dictionary:
+      '1': Si
+      '2': 'No'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P207_02
+    type: INTEGER
+    description: Sexo
+    semantic_dictionary:
+      '1': Hombre
+      '2': Mujer
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: P208_02
+    type: INTEGER
+    description: ¿Qué edad tiene en años cumplidos?
+  - name: P209_02
+    type: INTEGER
+    description: ¿Cuál es su estado civil o conyugal?
+    semantic_dictionary:
+      '1': Conviviente
+      '2': Casado(a)
+      '3': Viudo(a)
+      '4': Divorciado(a)
+      '5': Separado(a)
+      '6': Soltero(a)
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+  - name: P301_02
+    type: INTEGER
+    description: ¿Cuál es el último año o grado de estudios y nivel que aprobó? -
+      Nivel
+    semantic_dictionary:
+      '1': Sin nivel
+      '2': Educación Inicial
+      '3': Primaria incompleta
+      '4': Primaria completa
+      '5': Secundaria incompleta
+      '6': Secundaria completa
+      '7': Superior no Universitaria Incompleta
+      '8': Superior no Universitaria Completa
+      '9': Superior Universitaria Incompleta
+      '10': Superior Universitaria Completa
+      '11': Maestria/Doctorado
+      '12': Básica especial
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+  - name: TICUEST01B
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: FACTOR07
+    type: DOUBLE
+    description: Factor de Expansión Anual Proyecciones CPV-2007

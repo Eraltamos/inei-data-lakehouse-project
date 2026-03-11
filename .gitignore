@@ -218,3 +218,8 @@ data/*
 # Infraestructura interna de Dagster
 .dagster/
 .temp_dagster_home_*/
+.notebooks/
+
+
+# Variables de entorno locales
+.env

@@ -1,0 +1,202 @@
+# ==============================================================================
+# DATA CONTRACT: INEI - ENAHO
+# Capa: Bronze -> Silver
+# Motor de Validación Esperado: DuckDB (vía Dagster)
+# ==============================================================================
+dataset:
+  domain: microenterprise
+  silver_name: enaho_microenterprise_item_employees
+  grain: item
+  description: Mano de obra y remuneraciones.
+  source_system: inei_microdatos
+  bronze_name: inei_2023_enaho04_p24_raw
+  raw_file_name: Enaho04-2023-4-Preg-24.csv
+  year: 2023
+schema:
+  physical_type: parquet
+  engine: duckdb
+  columns:
+  - name: ACTIVIDA
+    type: INTEGER
+    description: Condición de la actividad laboral (Principal/Secundaria)
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    semantic_dictionary:
+      1: Actividad Principal
+      2: Actividad Secundaria
+  - name: AÑO
+    type: VARCHAR
+    description: Actividad de la persona
+    aliases:
+    - ANO
+    - ANIO
+  - name: MES
+    type: VARCHAR
+    description: Mes de Ejecución de la Encuesta
+  - name: NCONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado (proveniente del marco)
+  - name: SUB_CONGLOME
+    type: VARCHAR
+    description: Número de Subconglomerado (proveniente del marco)
+  - name: CONGLOME
+    type: VARCHAR
+    description: Número de Conglomerado
+  - name: VIVIENDA
+    type: VARCHAR
+    description: Número de Selección de Vivienda
+  - name: HOGAR
+    type: VARCHAR
+    description: Número secuencial del Hogar
+  - name: CODPERSO
+    type: VARCHAR
+    description: Número de orden de la persona
+  - name: UBIGEO
+    type: VARCHAR
+    description: Código de Ubicación Geográfica
+  - name: DOMINIO
+    type: INTEGER
+    description: Dominio Geográfico
+    semantic_dictionary:
+      '1': Costa Norte
+      '2': Costa Centro
+      '3': Costa Sur
+      '4': Sierra Norte
+      '5': Sierra Centro
+      '6': Sierra Sur
+      '7': Selva
+      '8': Lima Metropolitana  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: ESTRATO
+    type: INTEGER
+    description: Estrato Geográfico
+    semantic_dictionary:
+      '1': De 500 000 a más habitantes
+      '2': De 100 000 a 499 999 habitantes
+      '3': De 50 000 a 99 999 habitantes
+      '4': De 20 000 a 49 999 habitantes
+      '5': De 2 000 a 19 999 habitantes
+      '6': De 500 a 1 999 habitantes
+      '7': Área de Empadronamiento Rural (AER) Compuesto
+      '8': Área de Empadronamiento Rural (AER) Simple  – 8
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+  - name: CODINFOR
+    type: VARCHAR
+    description: Código de Informante
+  - name: PERIODO
+    type: INTEGER
+    description: Período de ejecución de la Encuesta
+    semantic_dictionary:
+      '1': Primer Período
+      '2': Segundo Período
+      '3': Tercer Período
+      '4': Cuarto Período
+      '5': 'Quinto Período Archivo : ENAHO04-2023-1-Preg-24  –5'
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+  - name: E24A
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - Número Orden
+  - name: E24B
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - Sexo
+  - name: E24C
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - Edad en años cumplidos
+  - name: E24D
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - Nivel Educativo
+    semantic_dictionary:
+      '1': Sin nivel
+      '2': Educación inicial
+      '3': Primaria
+      '4': Secundaria
+      '5': Superior no universitaria
+      '6': Superior universitaria  –6
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+  - name: E24E1
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - ¿Cuánto tiempo trabaja
+      en este negocio? - Años
+  - name: E24E2
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - ¿Cuánto tiempo trabaja
+      en este negocio? - Meses
+  - name: E24F
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - Horas trabajadas
+      en la semana pasada
+  - name: E24G
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - Remuneración bruta
+      mensual (horas extras, bonificación, etc.)
+  - name: E24H
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - ¿Cuenta con seguro
+      de salud en este trabajo?
+    semantic_dictionary:
+      '1': Si
+      '2': No  –2
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: E24I
+    type: INTEGER
+    description: Características de la mano de obra y el empleo - ¿Es familiar del
+      empleador?
+    semantic_dictionary:
+      '1': Si
+      '2': No  –2
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+  - name: TICUEST01B
+    type: INTEGER
+    description: Origen de cuestionario
+    semantic_dictionary:
+      '1': Cuestionario en hojas
+      '2': Cuestionario en Tablet
+    constraints:
+    - allowed_values:
+      - 1
+      - 2
+    required: false
+    data_missing: true
+  - name: FACTORA07
+    type: DOUBLE
+    description: Factor de Expansión anual de Empleo/Ingresos ajustados por grupos
+      de edad. Proyecciones CPV-2007
